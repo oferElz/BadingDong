@@ -1,6 +1,10 @@
+'use client'; // Required for client-side navigation
+
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import { role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
+import { navigateUser } from "@/lib/navigation"; // Import the utility function
 
 const menuItems = [
   {
@@ -9,7 +13,7 @@ const menuItems = [
       {
         icon: "/home.png",
         label: "Home",
-        href: "/",
+        action: "home", // Usecase for navigation
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
@@ -35,7 +39,7 @@ const menuItems = [
         label: "Attendance",
         href: "/list/attendance",
         visible: ["admin", "teacher", "student", "parent"],
-      }
+      },
     ],
   },
   {
@@ -56,7 +60,7 @@ const menuItems = [
       {
         icon: "/logout.png",
         label: "Logout",
-        href: "/logout",
+        action: "logout", // Usecase for navigation
         visible: ["admin", "teacher", "student", "parent"],
       },
     ],
@@ -64,6 +68,14 @@ const menuItems = [
 ];
 
 const Menu = () => {
+  const router = useRouter(); // Use useRouter for navigation
+
+  const handleAction = (action) => {
+    if (action === "logout" || action === "home") {
+      navigateUser(router, action, role); // Call the utility function for the given action
+    }
+  };
+
   return (
     <div className="mt-4 text-sm">
       {menuItems.map((i) => (
@@ -73,16 +85,31 @@ const Menu = () => {
           </span>
           {i.items.map((item) => {
             if (item.visible.includes(role)) {
-              return (
-                <Link
-                  href={item.href}
-                  key={item.label}
-                  className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
-                >
-                  <Image src={item.icon} alt="" width={20} height={20} />
-                  <span className="hidden lg:block">{item.label}</span>
-                </Link>
-              );
+              if (item.action) {
+                // Handle items with actions (e.g., Logout, Home)
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => handleAction(item.action)}
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
+                  >
+                    <Image src={item.icon} alt="" width={20} height={20} />
+                    <span className="hidden lg:block">{item.label}</span>
+                  </button>
+                );
+              } else if (item.href) {
+                // Handle items with links
+                return (
+                  <Link
+                    href={item.href}
+                    key={item.label}
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
+                  >
+                    <Image src={item.icon} alt="" width={20} height={20} />
+                    <span className="hidden lg:block">{item.label}</span>
+                  </Link>
+                );
+              }
             }
           })}
         </div>
