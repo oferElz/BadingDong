@@ -32,7 +32,7 @@ const menuItems: {
       {
         icon: "/Lecturers.png",
         label: "Lecturers",
-        href: "/list/teachers",
+        href: "/list/lecturers",
         visible: ["admin"],
       },
       {
