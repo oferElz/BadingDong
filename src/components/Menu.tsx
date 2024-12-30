@@ -32,31 +32,31 @@ const menuItems: {
       {
         icon: "/Lecturers.png",
         label: "Lecturers",
-        href: "/list/lecturers",
+        href: "/lecturers",
         visible: ["admin"],
       },
       {
         icon: "/student.png",
         label: "Students",
-        href: "/list/students",
+        href: "/students",
         visible: ["admin"],
       },
       {
         icon: "/Courses.png",
         label: "Courses",
-        href: "/list/courses",
+        href: "/courses",
         visible: ["admin", "teacher", "student"],
       },
       {
         icon: "/Lectures.png",
         label: "Lectures",
-        href: "/list/Lectures",
+        href: "/lectures",
         visible: ["admin"],
       },
       {
         icon: "/Appeals.png",
         label: "Appeals",
-        href: "/list/Appeals",
+        href: "/Appeals",
         visible: ["teacher", "student"],
       },
     ],
@@ -104,6 +104,8 @@ const Menu = () => {
           </span>
           {section.items.map((item) => {
             if (item.visible.includes(role)) {
+              const roleBasedPath = item.href ? `/${role}${item.href}` : null; // Add role to the path
+  
               if (item.action) {
                 // Handle items with actions (e.g., Logout, Home)
                 return (
@@ -116,11 +118,11 @@ const Menu = () => {
                     <span className="hidden lg:block">{item.label}</span>
                   </button>
                 );
-              } else if (item.href) {
+              } else if (roleBasedPath) {
                 // Handle items with links
                 return (
                   <Link
-                    href={item.href}
+                    href={roleBasedPath} // Use the role-based path
                     key={item.label}
                     className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
                   >
@@ -135,7 +137,7 @@ const Menu = () => {
         </div>
       ))}
     </div>
-  );
+  );  
 };
 
 export default Menu;
