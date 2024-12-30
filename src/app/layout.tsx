@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Badading-Dong School Management Dashboard",
-  description: "Badading-Dong School Management System",
+  title: "Bading-Dong School Management Dashboard",
+  description: "Bading-Dong School Management System",
 };
 
 export default function RootLayout({
