@@ -6,39 +6,58 @@ import Image from "next/image";
 import Link from "next/link";
 import { navigateUser } from "@/lib/navigation"; // Import the utility function
 
-const menuItems = [
+// Define Action type for specific actions
+type Action = "home" | "logout";
+
+// Define the structure of menu items
+const menuItems: {
+  title: string;
+  items: {
+    icon: string;
+    label: string;
+    action?: Action; // Optional action field
+    href?: string; // Optional href field
+    visible: string[]; // Roles that can see the item
+  }[];
+}[] = [
   {
     title: "MENU",
     items: [
       {
         icon: "/home.png",
         label: "Home",
-        action: "home", // Usecase for navigation
-        visible: ["admin", "teacher", "student", "parent"],
+        action: "home",
+        visible: ["admin", "teacher", "student"],
       },
       {
-        icon: "/teacher.png",
-        label: "Teachers",
+        icon: "/Lecturers.png",
+        label: "Lecturers",
         href: "/list/teachers",
-        visible: ["admin", "teacher"],
+        visible: ["admin"],
       },
       {
         icon: "/student.png",
         label: "Students",
         href: "/list/students",
-        visible: ["admin", "teacher"],
+        visible: ["admin"],
       },
       {
-        icon: "/lesson.png",
-        label: "Lessons",
-        href: "/list/lessons",
-        visible: ["admin", "teacher"],
+        icon: "/Courses.png",
+        label: "Courses",
+        href: "/list/courses",
+        visible: ["admin", "teacher", "student"],
       },
       {
-        icon: "/attendance.png",
-        label: "Attendance",
-        href: "/list/attendance",
-        visible: ["admin", "teacher", "student", "parent"],
+        icon: "/Lectures.png",
+        label: "Lectures",
+        href: "/list/Lectures",
+        visible: ["admin"],
+      },
+      {
+        icon: "/Appeals.png",
+        label: "Appeals",
+        href: "/list/Appeals",
+        visible: ["teacher", "student"],
       },
     ],
   },
@@ -49,19 +68,19 @@ const menuItems = [
         icon: "/profile.png",
         label: "Profile",
         href: "/profile",
-        visible: ["admin", "teacher", "student", "parent"],
+        visible: ["teacher", "student"],
       },
       {
-        icon: "/setting.png",
-        label: "Settings",
-        href: "/settings",
-        visible: ["admin", "teacher", "student", "parent"],
+        icon: "/darkmode.png",
+        label: "darkmode",
+        action: "logout",
+        visible: ["admin", "teacher", "student"],
       },
       {
         icon: "/logout.png",
         label: "Logout",
-        action: "logout", // Usecase for navigation
-        visible: ["admin", "teacher", "student", "parent"],
+        action: "logout",
+        visible: ["admin", "teacher", "student"],
       },
     ],
   },
@@ -70,7 +89,7 @@ const menuItems = [
 const Menu = () => {
   const router = useRouter(); // Use useRouter for navigation
 
-  const handleAction = (action) => {
+  const handleAction = (action: Action) => {
     if (action === "logout" || action === "home") {
       navigateUser(router, action, role); // Call the utility function for the given action
     }
@@ -78,19 +97,19 @@ const Menu = () => {
 
   return (
     <div className="mt-4 text-sm">
-      {menuItems.map((i) => (
-        <div className="flex flex-col gap-2" key={i.title}>
+      {menuItems.map((section) => (
+        <div className="flex flex-col gap-2" key={section.title}>
           <span className="hidden lg:block text-gray-400 font-light my-4">
-            {i.title}
+            {section.title}
           </span>
-          {i.items.map((item) => {
+          {section.items.map((item) => {
             if (item.visible.includes(role)) {
               if (item.action) {
                 // Handle items with actions (e.g., Logout, Home)
                 return (
                   <button
                     key={item.label}
-                    onClick={() => handleAction(item.action)}
+                    onClick={() => item.action && handleAction(item.action)}
                     className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
                   >
                     <Image src={item.icon} alt="" width={20} height={20} />
@@ -111,6 +130,7 @@ const Menu = () => {
                 );
               }
             }
+            return null; // Return null if the item is not visible
           })}
         </div>
       ))}
