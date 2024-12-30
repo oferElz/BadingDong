@@ -14,7 +14,7 @@ const AdminPage = () => {
           <UserCard type="teacher" />
         </div>
         {/* MIDDLE CHARTS */}
-        <div className="w-full lg:w-1/3 rounded-lg shadow-lg overflow-hidden mx-auto hidden lg:block">
+        <div className="w-full lg:w-1/3 rounded-lg overflow-hidden mx-auto hidden lg:block bg-transparent">
             <Image 
                 src="/BadingDong.png" 
                 alt="BadingDong" 
