@@ -1,7 +1,7 @@
 'use client'; // Required for client-side navigation
 
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
-import { role } from "@/lib/data";
+import { role } from "@/app/page";
 import Image from "next/image";
 import Link from "next/link";
 import { navigateUser } from "@/lib/navigation"; // Import the utility function
