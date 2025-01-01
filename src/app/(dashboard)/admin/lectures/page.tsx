@@ -80,7 +80,7 @@ export default function LecturesPage() {
     return (
       <tr
         key={item._id}
-        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
       >
         <td className="p-4">{item.course_id}</td>
         <td>{item.type}</td>

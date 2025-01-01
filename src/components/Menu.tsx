@@ -112,7 +112,7 @@ const Menu = () => {
                   <button
                     key={item.label}
                     onClick={() => item.action && handleAction(item.action)}
-                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-SkyLight"
                   >
                     <Image src={item.icon} alt="" width={20} height={20} />
                     <span className="hidden lg:block">{item.label}</span>
@@ -124,7 +124,7 @@ const Menu = () => {
                   <Link
                     href={roleBasedPath} // Use the role-based path
                     key={item.label}
-                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-lamaSkyLight"
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-SkyLight"
                   >
                     <Image src={item.icon} alt="" width={20} height={20} />
                     <span className="hidden lg:block">{item.label}</span>
