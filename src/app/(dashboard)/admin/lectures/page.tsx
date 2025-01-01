@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Table from "@/components/Table";
 import Image from "next/image";
 import TableSearch from "@/components/TableSearch";
-
 type UserDetails = {
   id: string;
   name: string;
@@ -40,6 +39,7 @@ const columns = [
 export default function LecturesPage() {
   const [lectures, setLectures] = useState<LectureDoc[]>([]);
   const [expandedLecture, setExpandedLecture] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // 1) FETCH LECTURES FROM /api/lectures ON MOUNT
   useEffect(() => {
@@ -55,13 +55,28 @@ export default function LecturesPage() {
   const toggleExpand = (lectureId: string) => {
     setExpandedLecture((prev) => (prev === lectureId ? null : lectureId));
   };
-
+  
+  const filteredData = lectures.filter((item) => {
+    return (
+      item.course_id.toString().includes(searchQuery) ||
+      item.type.includes(searchQuery) ||
+      item.start_time.includes(searchQuery) ||
+      item.end_time.includes(searchQuery) ||
+      item.lecturer_details.name.includes(searchQuery) ||
+      item.lecturer_details.id.includes(searchQuery) ||
+      item.day_of_week.includes(searchQuery) ||
+      item.students_details.some(
+        (student) =>
+          student.name.includes(searchQuery) || student.id.includes(searchQuery)
+      )
+    );
+  });
   // 3) RENDER EACH TABLE ROW
   const renderRow = (item: LectureDoc) => {
     const isExpanded = expandedLecture === item._id;
     const arrowSrc = isExpanded ? "/arrow-right.svg" : "/arrow-down.svg";
     const buttonText = isExpanded ? "Hide" : "Show";
-  
+    
     return (
       <tr
         key={item._id}
@@ -88,7 +103,7 @@ export default function LecturesPage() {
           </button>
   
           {isExpanded && (
-            <div className="mt-2 bg-gray-100 p-2 rounded-md w-full overflow-x-hidden">
+            <div className="mt-2 p-2 rounded-md w-full overflow-x-hidden">
               <ul className="list-disc list-inside">
                 {item.students_details.map((student) => (
                   <li key={student.id} className="text-xs">
@@ -118,14 +133,14 @@ export default function LecturesPage() {
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">Lectures</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
+          <TableSearch value={searchQuery} onChange={setSearchQuery} />
           <div className="flex items-center gap-4 self-end">
             {<FormModal table="class" type="create" />}
           </div>
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={lectures} />
+      <Table columns={columns} renderRow={renderRow} data={filteredData} />
     </div>
   );
 };
