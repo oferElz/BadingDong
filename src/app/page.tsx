@@ -1,23 +1,23 @@
-'use client'; // Required for handling client-side logic
+"use client"; // Required for handling client-side logic
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-let role = '';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+let role = "";
 const Homepage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleLogin = async () => {
     try {
       // Fetch the users from the /api/users endpoint
-      const response = await fetch('/api/users');
+      const response = await fetch("/api/users");
       if (!response.ok) {
-        throw new Error('Failed to fetch users');
+        throw new Error("Failed to fetch users");
       }
 
       const users = await response.json();
-      
+
       // Check if username and password match any user
       const foundUser = users.find(
         (user: any) => user.username === username && user.password === password
@@ -28,11 +28,11 @@ const Homepage = () => {
         role = foundUser.role;
         router.push(`/${foundUser.role}`);
       } else {
-        alert('Invalid username or password');
+        alert("Invalid username or password");
       }
     } catch (error) {
-      console.error('Error during login:', error);
-      alert('Something went wrong. Please try again.');
+      console.error("Error during login:", error);
+      alert("Something went wrong. Please try again.");
     }
   };
 
