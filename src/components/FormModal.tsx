@@ -3,10 +3,11 @@ import { useState } from "react";
 import Image from "next/image";
 import CoursesForm from "@/components/forms/CoursesForm";
 import StudentForm from "@/components/forms/StudentForm"; 
+import LecturesForm from "./forms/LecturesForm";
 
 type Props = {
   mode: "create" | "update" | "delete";
-  model: "courses" | "student"; 
+  model: "courses" | "lectures"; 
   item?: any; 
   onCreate?: (data: any) => void;
   onUpdate?: (data: any) => void;
@@ -43,7 +44,7 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
       />
     ),
     lectures: (
-      <StudentForm
+      <LecturesForm
         mode={mode}
         item={item}
         onClose={() => setOpen(false)}
