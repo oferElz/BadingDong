@@ -19,7 +19,7 @@ type ClassItem = {
 };
 
 type Props = {
-  mode: "create" | "update"; // Mode can be create or update
+  mode: "create" | "update" | "delete"; // Mode can be create or update
   item?: ClassItem; // Item to edit in update mode
   onClose: () => void; // Function to close the form
   onCreate?: (data: Omit<ClassItem, "_id">) => void; // Handler for create
