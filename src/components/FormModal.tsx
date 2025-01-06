@@ -10,7 +10,7 @@ type Props = {
   item?: any; 
   onCreate?: (data: any) => void;
   onUpdate?: (data: any) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (data: any) => void;
 };
 
 export default function FormModal({ mode, model, item, onCreate, onUpdate, onDelete }: Props) {
@@ -26,12 +26,12 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
 
   const handleDelete = () => {
     if (item && onDelete) {
-      onDelete(item.id);
+      onDelete(item._id);
     }
     setOpen(false);
   };
 
-  // Map model names to their corresponding form components
+
   const formMap: Record<string, JSX.Element> = {
     courses: (
       <CoursesForm
@@ -51,7 +51,6 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
         onUpdate={onUpdate}
       />
     ),
-    // Add more models here as needed
   };
 
   return (

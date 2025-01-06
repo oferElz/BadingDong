@@ -3,87 +3,89 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+// Schema validation using Zod
 const schema = z.object({
-  id: z.number().optional(),
-  name: z.string().min(1),
-  code: z.number().min(1),
-  teachers: z.string()
+  _id: z.string().optional(), // Optional for create, required for update
+  name: z.string().min(1, "Class name is required"), // Ensure name is provided
+  id: z.string().min(1, "Course code is required"), // Ensure id (code) is provided
 });
 
 type FormData = z.infer<typeof schema>;
 
 type ClassItem = {
-  id: number;
-  name: string;
-  code: number;
-  teachers: string[];
+  _id: string; // MongoDB ObjectId
+  name: string; // Class name
+  id: string; // Course code
 };
 
 type Props = {
-  mode: "create" | "update" | "delete";
-  item?: ClassItem;
-  onClose: () => void;
-  onCreate?: (data: Omit<ClassItem, "id">) => void;
-  onUpdate?: (data: ClassItem) => void;
+  mode: "create" | "update"; // Mode can be create or update
+  item?: ClassItem; // Item to edit in update mode
+  onClose: () => void; // Function to close the form
+  onCreate?: (data: Omit<ClassItem, "_id">) => void; // Handler for create
+  onUpdate?: (data: ClassItem) => void; // Handler for update
 };
 
-export default function CoursesForm({ mode, item, onClose, onCreate, onUpdate }: Props) {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+export default function CoursesForm({
+  mode,
+  item,
+  onClose,
+  onCreate,
+  onUpdate,
+}: Props) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      id: item?.id,
-      name: item?.name || "",
-      code: item?.code || 1,
-      teachers: item?.teachers.join(", ") || "",
+      _id: item?._id || "", // Populate _id if item is provided
+      name: item?.name || "", // Populate name if item is provided
+      id: item?.id || "", // Populate id (code) if item is provided
     },
   });
 
   const onSubmit = (data: FormData) => {
-    const teachersArray = data.teachers
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
     if (mode === "create" && onCreate) {
-      onCreate({ name: data.name, code: data.code, teachers: teachersArray });
+      onCreate({ name: data.name, id: data.id }); 
     }
-    if (mode === "update" && onUpdate && data.id) {
-      onUpdate({ id: data.id, name: data.name, code: data.code, teachers: teachersArray });
+    if (mode === "update" && onUpdate && data._id) {
+      onUpdate({ _id: data._id, name: data.name, id: data.id }); // Include _id for update
     }
     onClose();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <h2 className="text-xl font-bold">{mode === "create" ? "Create Class" : "Update Class"}</h2>
+      <h2 className="text-xl font-bold">
+        {mode === "create" ? "Create Course" : "Update Course"}
+      </h2>
       <div className="flex flex-col gap-1">
-        <label>Class Name</label>
+        <label htmlFor="name">Class Name</label>
         <input
+          id="name"
           {...register("name")}
           className="border p-2 rounded"
-          placeholder="Class name"
+          placeholder="Enter class name"
         />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+        {errors.name && (
+          <p className="text-red-500 text-sm">{errors.name.message}</p>
+        )}
       </div>
       <div className="flex flex-col gap-1">
-        <label>Course Code</label>
+        <label htmlFor="id">Course Code</label>
         <input
-          type="number"
-          {...register("code", { valueAsNumber: true })}
+          id="id"
+          {...register("id")}
           className="border p-2 rounded"
-          placeholder="1234"
+          placeholder="Enter course code"
         />
-        {errors.code && <p className="text-red-500 text-sm">{errors.code.message}</p>}
+        {errors.id && (
+          <p className="text-red-500 text-sm">{errors.id.message}</p>
+        )}
       </div>
-      <div className="flex flex-col gap-1">
-        <label>Teachers (comma-separated)</label>
-        <input
-          {...register("teachers")}
-          className="border p-2 rounded"
-          placeholder="Alice, Bob"
-        />
-        {errors.teachers && <p className="text-red-500 text-sm">{errors.teachers.message}</p>}
-      </div>
-      <button className="bg-blue-500 text-white p-2 rounded">
+      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
         {mode === "create" ? "Create" : "Update"}
       </button>
     </form>
