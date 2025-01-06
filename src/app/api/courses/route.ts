@@ -22,8 +22,6 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
       const body = await request.json();
-  
-      // Validate that both name and id are provided
       if (!body.name || !body.id) {
         return NextResponse.json(
           { message: "Invalid input" },
@@ -34,11 +32,8 @@ export async function POST(request: Request) {
       await connectToDB();
       const db = mongoose.connection.useDb("BA-DINGDONG-DB");
       const coursesCollection = db.collection("courses");
-  
-      // Insert the entire body as the document
       const result = await coursesCollection.insertOne(body);
   
-      // Include _id from the result and return the created document
       const createdCourse = { _id: result.insertedId, ...body };
       return NextResponse.json(createdCourse, { status: 201 });
     } catch (error) {

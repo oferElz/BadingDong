@@ -5,25 +5,25 @@ import { z } from "zod";
 
 // Schema validation using Zod
 const schema = z.object({
-  _id: z.string().optional(), // Optional for create, required for update
-  name: z.string().min(1, "Class name is required"), // Ensure name is provided
-  id: z.string().min(1, "Course code is required"), // Ensure id (code) is provided
+  _id: z.string().optional(), 
+  name: z.string().min(1, "Class name is required"),
+  id: z.string().min(1, "Course code is required"), 
 });
 
 type FormData = z.infer<typeof schema>;
 
 type ClassItem = {
-  _id: string; // MongoDB ObjectId
-  name: string; // Class name
-  id: string; // Course code
+  _id: string; 
+  name: string; 
+  id: string; 
 };
 
 type Props = {
-  mode: "create" | "update" | "delete"; // Mode can be create or update
-  item?: ClassItem; // Item to edit in update mode
-  onClose: () => void; // Function to close the form
-  onCreate?: (data: Omit<ClassItem, "_id">) => void; // Handler for create
-  onUpdate?: (data: ClassItem) => void; // Handler for update
+  mode: "create" | "update" | "delete"; 
+  item?: ClassItem; 
+  onClose: () => void; 
+  onCreate?: (data: Omit<ClassItem, "_id">) => void; 
+  onUpdate?: (data: ClassItem) => void; 
 };
 
 export default function CoursesForm({
@@ -40,9 +40,9 @@ export default function CoursesForm({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      _id: item?._id || "", // Populate _id if item is provided
-      name: item?.name || "", // Populate name if item is provided
-      id: item?.id || "", // Populate id (code) if item is provided
+      _id: item?._id || "", 
+      name: item?.name || "", 
+      id: item?.id || "", 
     },
   });
 
@@ -51,7 +51,7 @@ export default function CoursesForm({
       onCreate({ name: data.name, id: data.id }); 
     }
     if (mode === "update" && onUpdate && data._id) {
-      onUpdate({ _id: data._id, name: data.name, id: data.id }); // Include _id for update
+      onUpdate({ _id: data._id, name: data.name, id: data.id }); 
     }
     onClose();
   };

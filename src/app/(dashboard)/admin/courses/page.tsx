@@ -5,9 +5,9 @@ import TableSearch from "@/components/TableSearch";
 import FormModal from "@/components/FormModal";
 
 type ClassItem = {
-  _id: string; // MongoDB ObjectId as a string
-  id: string; // Course code (e.g., "CS1010")
-  name: string; // Course name (e.g., "Web Technologies")
+  _id: string;
+  id: string; 
+  name: string; 
 };
 
 export default function ClassListPage() {
@@ -15,7 +15,6 @@ export default function ClassListPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const role = "admin";
 
-  // Fetch courses from the API
   const fetchCourses = async () => {
     try {
       const response = await fetch("/api/courses");
@@ -27,19 +26,17 @@ export default function ClassListPage() {
   };
 
   useEffect(() => {
-    fetchCourses(); // Initial fetch on component mount
+    fetchCourses(); 
   }, []);
 
   console.log("Fetched classes:", classList);
 
-  // Filter courses based on search query
   const filteredData = classList.filter(
     (item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Handle creating a new course
   const handleCreate = async (newItem: Omit<ClassItem, "_id">) => {
     try {
       const response = await fetch("/api/courses", {
@@ -53,13 +50,12 @@ export default function ClassListPage() {
         throw new Error("Failed to create course");
       }
 
-      await fetchCourses(); // Refresh the course list after creation
+      await fetchCourses(); 
     } catch (error) {
       console.error("Error creating course:", error);
     }
   };
 
-  // Handle updating an existing course
   const handleUpdate = async (updatedItem: ClassItem) => {
     try {
       const response = await fetch("/api/courses", {
@@ -72,13 +68,12 @@ export default function ClassListPage() {
         throw new Error("Failed to update course");
       }
 
-      await fetchCourses(); // Refresh the course list after update
+      await fetchCourses();
     } catch (error) {
       console.error("Error updating course:", error);
     }
   };
 
-  // Handle deleting a course
   const handleDelete = async (_id: string) => {
     try {
       const response = await fetch("/api/courses", {
@@ -92,20 +87,18 @@ export default function ClassListPage() {
         throw new Error("Failed to delete course");
       }
 
-      await fetchCourses(); // Refresh the course list after deletion
+      await fetchCourses(); 
     } catch (error) {
       console.error("Error deleting course:", error);
     }
   };
 
-  // Define table columns
   const columns = [
     { header: "Course Name", accessor: "name" },
     { header: "Course Code", accessor: "id", className: "hidden md:table-cell" },
     { header: "Actions", accessor: "action" },
   ];
 
-  // Render each table row
   const renderRow = (item: ClassItem) => (
     <tr
       key={item._id}
@@ -124,7 +117,6 @@ export default function ClassListPage() {
     </tr>
   );
 
-  // Render the class list page
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
