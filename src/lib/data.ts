@@ -2,6 +2,23 @@
 
 export let role = "admin";
 
+export const lecturersData = [
+  {
+    _id: "lecturer1",
+    lecturer_id: "123456789",
+    name: "John Doe",
+    username: "john.doe",
+    courses: ["Web Technologies", "Introduction to Cloud Computing"]
+  },
+  {
+    _id: "lecturer2",
+    lecturer_id: "987654321",
+    name: "Jane French",
+    username: "u1",
+    courses: ["Compilation Theory"]
+  }
+]
+
 export const teachersData = [
   {
     id: 1,
