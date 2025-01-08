@@ -2,6 +2,23 @@
 
 export let role = "admin";
 
+export const lecturersData = [
+  {
+    _id: "lecturer1",
+    lecturer_id: "123456789",
+    name: "John Doe",
+    username: "john.doe",
+    courses: ["Web Technologies", "Introduction to Cloud Computing"]
+  },
+  {
+    _id: "lecturer2",
+    lecturer_id: "987654321",
+    name: "Jane French",
+    username: "u1",
+    courses: ["Compilation Theory"]
+  }
+]
+
 export const teachersData = [
   {
     id: 1,
@@ -388,72 +405,62 @@ export const classesData = [
   {
     id: 1,
     name: "1A",
-    capacity: 20,
-    grade: 1,
-    supervisor: "Joseph Padilla",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 2,
     name: "2B",
-    capacity: 22,
-    grade: 2,
-    supervisor: "Blake Joseph",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 3,
     name: "3C",
-    capacity: 20,
-    grade: 3,
-    supervisor: "Tom Bennett",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 4,
     name: "4B",
-    capacity: 18,
-    grade: 4,
-    supervisor: "Aaron Collins",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 5,
     name: "5A",
-    capacity: 16,
-    grade: 5,
-    supervisor: "Iva Frank",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 5,
     name: "5B",
-    capacity: 20,
-    grade: 5,
-    supervisor: "Leila Santos",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 7,
     name: "7A",
-    capacity: 18,
-    grade: 7,
-    supervisor: "Carrie Walton",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 8,
     name: "6B",
-    capacity: 22,
-    grade: 6,
-    supervisor: "Christopher Butler",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 9,
     name: "6C",
-    capacity: 18,
-    grade: 6,
-    supervisor: "Marc Miller",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
   {
     id: 10,
     name: "6D",
-    capacity: 20,
-    grade: 6,
-    supervisor: "Ophelia Marsh",
+    code: 1234,
+    teachers: ["Harriet Alvarado", ", Mayme Keller"],
   },
 ];
 

@@ -1,22 +1,38 @@
-'use client'; // Required for handling client-side logic
+"use client"; // Required for handling client-side logic
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+let role = "";
 const Homepage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
-    if (username === 'student' && password === 'student') {
-      router.push('/student');
-    } else if (username === 'teacher' && password === 'teacher') {
-      router.push('/teacher');
-    } else if (username === 'admin' && password === 'admin') {
-      router.push('/admin');
-    } else {
-      alert('Invalid username or password');
+  const handleLogin = async () => {
+    try {
+      // Fetch the users from the /api/users endpoint
+      const response = await fetch("/api/users");
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+
+      const users = await response.json();
+
+      // Check if username and password match any user
+      const foundUser = users.find(
+        (user: any) => user.username === username && user.password === password
+      );
+
+      if (foundUser) {
+        // Redirect to /<role>, e.g., /Student, /Teacher, /Admin, etc.
+        role = foundUser.role;
+        router.push(`/${foundUser.role}`);
+      } else {
+        alert("Invalid username or password");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Something went wrong. Please try again.");
     }
   };
 
@@ -54,3 +70,4 @@ const Homepage = () => {
 };
 
 export default Homepage;
+export { role };
