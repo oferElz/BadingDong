@@ -30,7 +30,7 @@ const FormModal = ({
   id,
 }: {
   table:
-    | "teacher"
+    | "lecturer"
     | "student"
     | "parent"
     | "subject"
