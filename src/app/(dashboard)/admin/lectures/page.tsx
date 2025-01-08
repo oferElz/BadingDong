@@ -134,14 +134,14 @@ export default function LecturesPage() {
   const filteredData = lectures.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
-      item.course_id.toLowerCase().includes(query) ||
-      item.type.toLowerCase().includes(query) ||
-      item.start_time.toLowerCase().includes(query) ||
-      item.end_time.toLowerCase().includes(query) ||
-      item.lecturer_details.name.toLowerCase().includes(query) ||
-      item.lecturer_details.id.toLowerCase().includes(query) ||
-      item.day_of_week.toLowerCase().includes(query) ||
-      item.students_details.some(
+      item.course_id?.toLowerCase().includes(query) ||
+      item.type?.toLowerCase().includes(query) ||
+      item.start_time?.toLowerCase().includes(query) ||
+      item.end_time?.toLowerCase().includes(query) ||
+      item.lecturer_details?.name.toLowerCase().includes(query) ||
+      item.lecturer_details?.id.toLowerCase().includes(query) ||
+      item.day_of_week?.toLowerCase().includes(query) ||
+      item.students_details?.some(
         (student) =>
           student.name.toLowerCase().includes(query) ||
           student.id.toLowerCase().includes(query)
