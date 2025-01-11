@@ -1,10 +1,11 @@
 "use client"; // Required for client-side navigation
 
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
-import { role } from "@/app/page";
+// import { role } from "@/app/page";
 import Image from "next/image";
 import Link from "next/link";
 import { navigateUser } from "@/lib/navigation"; // Import the utility function
+import { signOut, useSession } from "next-auth/react";
 
 // Define Action type for specific actions
 type Action = "home" | "logout";
@@ -88,10 +89,13 @@ const menuItems: {
 
 const Menu = () => {
   const router = useRouter(); // Use useRouter for navigation
+  const { data: session } = useSession();
+  const userRole = session?.user?.role?.toLowerCase() || "";
 
   const handleAction = (action: Action) => {
     if (action === "logout" || action === "home") {
-      navigateUser(router, action, role); // Call the utility function for the given action
+      signOut({ callbackUrl: "/" });
+      // navigateUser(router, action, role); // Call the utility function for the given action
     }
   };
 
@@ -103,8 +107,10 @@ const Menu = () => {
             {section.title}
           </span>
           {section.items.map((item) => {
-            if (item.visible.includes(role)) {
-              const roleBasedPath = item.href ? `/${role}${item.href}` : null; // Add role to the path
+            if (item.visible.includes(userRole)) {
+              const roleBasedPath = item.href
+                ? `/${userRole}${item.href}`
+                : null; // Add role to the path
 
               if (item.action) {
                 // Handle items with actions (e.g., Logout, Home)

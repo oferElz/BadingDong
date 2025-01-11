@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { role, userId } from "@/app/page"; // Import the global variables from your login page
+import { useSession } from "next-auth/react";
 
 interface CourseClass {
   type: string;
@@ -20,6 +20,10 @@ interface Course {
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const router = useRouter();
+
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const userRole = session?.user?.role;
 
   useEffect(() => {
     const fetchCourses = async () => {

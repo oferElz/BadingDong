@@ -5,7 +5,8 @@ import TableSearch from "@/components/TableSearch";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { role } from "@/lib/data";
+import { useSession } from "next-auth/react";
+// import { role } from "@/lib/data";
 
 type Student = {
   username: string;
@@ -37,6 +38,10 @@ const StudentListPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const role = session?.user?.role;
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -87,9 +92,9 @@ const StudentListPage = () => {
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          {role === "admin" && (
+          {/* {role === "admin" && (
             <FormModal table="student" type="delete" id={item.id} />
-          )}
+          )} */}
         </div>
       </td>
     </tr>
@@ -109,12 +114,12 @@ const StudentListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button> */}
-            {role === "admin" && (
+            {/* {role === "admin" && (
               // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
               //   <Image src="/plus.png" alt="" width={14} height={14} />
               // </button>
               <FormModal table="student" type="create" />
-            )}
+            )} */}
           </div>
         </div>
       </div>

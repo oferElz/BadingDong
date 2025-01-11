@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import FormModal from "@/components/FormModal";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+// import { role } from "@/lib/data";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 type Lecturer = {
   _id: string;
@@ -41,6 +42,10 @@ const LecturersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const role = session?.user?.role;
 
   useEffect(() => {
     const fetchLecturers = async () => {
@@ -132,7 +137,7 @@ const LecturersList = () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
           <div className="flex items-center gap-4 self-end">
-            {role === "admin" && <FormModal table="lecturer" type="create" />}
+            {/* {role === "admin" && <FormModal table="lecturer" type="create" />} */}
           </div>
         </div>
       </div>
