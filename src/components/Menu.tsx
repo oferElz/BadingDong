@@ -1,4 +1,4 @@
-'use client'; // Required for client-side navigation
+"use client"; // Required for client-side navigation
 
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import { role } from "@/app/page";
@@ -45,7 +45,7 @@ const menuItems: {
         icon: "/Courses.png",
         label: "Courses",
         href: "/courses",
-        visible: ["admin", "teacher", "student"],
+        visible: ["admin", "lecturer", "student"],
       },
       {
         icon: "/Lectures.png",
@@ -57,7 +57,7 @@ const menuItems: {
         icon: "/Appeals.png",
         label: "Appeals",
         href: "/Appeals",
-        visible: ["teacher", "student"],
+        visible: ["lecturer", "student"],
       },
     ],
   },
@@ -68,19 +68,19 @@ const menuItems: {
         icon: "/profile.png",
         label: "Profile",
         href: "/profile",
-        visible: ["teacher", "student"],
+        visible: ["lecturer", "student"],
       },
       {
         icon: "/darkmode.png",
         label: "darkmode",
         action: "logout",
-        visible: ["admin", "teacher", "student"],
+        visible: ["admin", "lecturer", "student"],
       },
       {
         icon: "/logout.png",
         label: "Logout",
         action: "logout",
-        visible: ["admin", "teacher", "student"],
+        visible: ["admin", "lecturer", "student"],
       },
     ],
   },
@@ -105,7 +105,7 @@ const Menu = () => {
           {section.items.map((item) => {
             if (item.visible.includes(role)) {
               const roleBasedPath = item.href ? `/${role}${item.href}` : null; // Add role to the path
-  
+
               if (item.action) {
                 // Handle items with actions (e.g., Logout, Home)
                 return (
@@ -137,7 +137,7 @@ const Menu = () => {
         </div>
       ))}
     </div>
-  );  
+  );
 };
 
 export default Menu;

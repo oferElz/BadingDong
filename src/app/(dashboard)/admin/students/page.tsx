@@ -7,7 +7,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { role } from "@/lib/data";
 
-console.log("Got in students page");
 type Student = {
   username: string;
   password: string;

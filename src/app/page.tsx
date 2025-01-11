@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 let role = "";
+let userId = "";
 const Homepage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +27,7 @@ const Homepage = () => {
       if (foundUser) {
         // Redirect to /<role>, e.g., /Student, /Teacher, /Admin, etc.
         role = foundUser.role;
+        userId = foundUser.id;
         router.push(`/${foundUser.role}`);
       } else {
         alert("Invalid username or password");
@@ -71,3 +73,4 @@ const Homepage = () => {
 
 export default Homepage;
 export { role };
+export { userId };

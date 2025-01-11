@@ -32,7 +32,7 @@ const columns = [
   {
     header: "Actions",
     accessor: "action",
-    className: "text-center pl-8", 
+    className: "text-center pl-8",
   },
 ];
 
@@ -72,7 +72,8 @@ const LecturersList = () => {
       lecturer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lecturer.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lecturer.lecturer_id.includes(searchQuery) ||
-      (lecturer.courses.length === 0 && "none".includes(searchQuery.toLowerCase())) ||
+      (lecturer.courses.length === 0 &&
+        "none".includes(searchQuery.toLowerCase())) ||
       lecturer.courses.some((course) =>
         course.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -109,7 +110,7 @@ const LecturersList = () => {
           </span>
         )}
       </td>
-      <td className="pl-8 text-center"> 
+      <td className="pl-8 text-center">
         <div className="flex items-center gap-2 justify-center">
           <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Sky">
             <Image src="/view.png" alt="" width={16} height={16} />
