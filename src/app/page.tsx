@@ -1,8 +1,8 @@
-"use client"; // Required for handling client-side logic
-
+"use client";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-let role = "";
+
 const Homepage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -10,25 +10,22 @@ const Homepage = () => {
 
   const handleLogin = async () => {
     try {
-      // Fetch the users from the /api/users endpoint
-      const response = await fetch("/api/users");
-      if (!response.ok) {
-        throw new Error("Failed to fetch users");
-      }
+      const result = await signIn("credentials", {
+        username,
+        password,
+        redirect: false, // We'll handle redirect ourselves
+      });
 
-      const users = await response.json();
-
-      // Check if username and password match any user
-      const foundUser = users.find(
-        (user: any) => user.username === username && user.password === password
-      );
-
-      if (foundUser) {
-        // Redirect to /<role>, e.g., /Student, /Teacher, /Admin, etc.
-        role = foundUser.role;
-        router.push(`/${foundUser.role}`);
-      } else {
+      if (result?.error) {
         alert("Invalid username or password");
+      } else {
+        // Get the session data
+        const response = await fetch("/api/auth/session");
+        const session = await response.json();
+
+        if (session?.user?.role) {
+          router.push(`/${session.user.role.toLowerCase()}`);
+        }
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -70,4 +67,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-export { role };

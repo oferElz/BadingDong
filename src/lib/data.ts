@@ -1,6 +1,6 @@
 // TEMPORARY DATA
 
-export let role = "admin";
+export let role = "student";
 
 export const lecturersData = [
   {
@@ -8,16 +8,16 @@ export const lecturersData = [
     lecturer_id: "123456789",
     name: "John Doe",
     username: "john.doe",
-    courses: ["Web Technologies", "Introduction to Cloud Computing"]
+    courses: ["Web Technologies", "Introduction to Cloud Computing"],
   },
   {
     _id: "lecturer2",
     lecturer_id: "987654321",
     name: "Jane French",
     username: "u1",
-    courses: ["Compilation Theory"]
-  }
-]
+    courses: ["Compilation Theory"],
+  },
+];
 
 export const teachersData = [
   {
@@ -858,8 +858,6 @@ export const eventsData = [
     endTime: "11:00",
   },
 ];
-
-
 
 // YOU SHOULD CHANGE THE DATES OF THE EVENTS TO THE CURRENT DATE TO SEE THE EVENTS ON THE CALENDAR
 export const calendarEvents = [

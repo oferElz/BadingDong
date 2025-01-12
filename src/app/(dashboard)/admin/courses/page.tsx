@@ -6,8 +6,8 @@ import FormModal from "@/components/FormModal";
 
 type ClassItem = {
   _id: string;
-  id: string; 
-  name: string; 
+  id: string;
+  name: string;
 };
 
 export default function ClassListPage() {
@@ -26,10 +26,8 @@ export default function ClassListPage() {
   };
 
   useEffect(() => {
-    fetchCourses(); 
+    fetchCourses();
   }, []);
-
-  console.log("Fetched classes:", classList);
 
   const filteredData = classList.filter(
     (item) =>
@@ -44,13 +42,12 @@ export default function ClassListPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newItem),
       });
-      console.log('new item', newItem)
 
       if (!response.ok) {
         throw new Error("Failed to create course");
       }
 
-      await fetchCourses(); 
+      await fetchCourses();
     } catch (error) {
       console.error("Error creating course:", error);
     }
@@ -81,13 +78,12 @@ export default function ClassListPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ _id }),
       });
-      console.log('_id', _id)
 
       if (!response.ok) {
         throw new Error("Failed to delete course");
       }
 
-      await fetchCourses(); 
+      await fetchCourses();
     } catch (error) {
       console.error("Error deleting course:", error);
     }
@@ -95,7 +91,11 @@ export default function ClassListPage() {
 
   const columns = [
     { header: "Course Name", accessor: "name" },
-    { header: "Course Code", accessor: "id", className: "hidden md:table-cell" },
+    {
+      header: "Course Code",
+      accessor: "id",
+      className: "hidden md:table-cell",
+    },
     { header: "Actions", accessor: "action" },
   ];
 
@@ -109,8 +109,18 @@ export default function ClassListPage() {
       <td>
         {role === "admin" && (
           <div className="flex items-center gap-2">
-            <FormModal model="courses" mode="update" item={item} onUpdate={handleUpdate} />
-            <FormModal model="courses" mode="delete" item={item} onDelete={handleDelete} />
+            <FormModal
+              model="courses"
+              mode="update"
+              item={item}
+              onUpdate={handleUpdate}
+            />
+            <FormModal
+              model="courses"
+              mode="delete"
+              item={item}
+              onDelete={handleDelete}
+            />
           </div>
         )}
       </td>
@@ -123,7 +133,9 @@ export default function ClassListPage() {
         <h1 className="text-lg font-semibold">All Classes</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
-          {role === "admin" && <FormModal model="courses" mode="create" onCreate={handleCreate} />}
+          {role === "admin" && (
+            <FormModal model="courses" mode="create" onCreate={handleCreate} />
+          )}
         </div>
       </div>
       <Table columns={columns} renderRow={renderRow} data={filteredData} />

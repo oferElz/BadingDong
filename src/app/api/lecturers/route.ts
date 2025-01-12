@@ -35,9 +35,14 @@ export async function GET() {
     const coursesCollection = db.collection<Course>("courses");
 
     // Fetch lecturers
-    const lecturers = await usersCollection.find({ role: "Lecturer" }).toArray();
+    const lecturers = await usersCollection
+      .find({ role: "lecturer" })
+      .toArray();
     if (!lecturers.length) {
-      return NextResponse.json({ message: "No lecturers found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "No lecturers found" },
+        { status: 404 }
+      );
     }
 
     // Fetch all lectures and courses
@@ -55,34 +60,42 @@ export async function GET() {
     }, {} as Record<string, string>);
 
     // Construct lecturer objects with error handling
-    const lecturersData = lecturers.map((lecturer) => {
-      try {
-        const assignedLectures = lectures.filter((lecture) => 
-          lecture && lecture.lecturer_id === (lecturer.id || lecturer._id.toString())
-        );
+    const lecturersData = lecturers
+      .map((lecturer) => {
+        try {
+          const assignedLectures = lectures.filter(
+            (lecture) =>
+              lecture &&
+              lecture.lecturer_id === (lecturer.id || lecturer._id.toString())
+          );
 
-        const courseIds = Array.from(new Set(
-            assignedLectures
-              .filter(lec => lec && lec.course_id)
-              .map(lec => lec.course_id)
-          ));
+          const courseIds = Array.from(
+            new Set(
+              assignedLectures
+                .filter((lec) => lec && lec.course_id)
+                .map((lec) => lec.course_id)
+            )
+          );
 
-        const courseNames = courseIds
-          .map(id => courseMap[id])
-          .filter(name => name); // Remove undefined/null course names
+          const courseNames = courseIds
+            .map((id) => courseMap[id])
+            .filter((name) => name); // Remove undefined/null course names
 
-        return {
-          _id: lecturer._id.toString(),
-          lecturer_id: lecturer.id || lecturer._id.toString(),
-          name: `${lecturer.first_name || ''} ${lecturer.last_name || ''}`.trim(),
-          username: lecturer.username || '',
-          courses: courseNames,
-        };
-      } catch (error) {
-        console.error(`Error processing lecturer ${lecturer._id}:`, error);
-        return null;
-      }
-    }).filter(Boolean); // Remove any null entries from failed processing
+          return {
+            _id: lecturer._id.toString(),
+            lecturer_id: lecturer.id || lecturer._id.toString(),
+            name: `${lecturer.first_name || ""} ${
+              lecturer.last_name || ""
+            }`.trim(),
+            username: lecturer.username || "",
+            courses: courseNames,
+          };
+        } catch (error) {
+          console.error(`Error processing lecturer ${lecturer._id}:`, error);
+          return null;
+        }
+      })
+      .filter(Boolean); // Remove any null entries from failed processing
 
     if (!lecturersData.length) {
       return NextResponse.json(
@@ -95,9 +108,9 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching lecturers data:", error);
     return NextResponse.json(
-      { 
-        message: "Failed to fetch lecturers data", 
-        error: error instanceof Error ? error.message : "Unknown error"
+      {
+        message: "Failed to fetch lecturers data",
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
