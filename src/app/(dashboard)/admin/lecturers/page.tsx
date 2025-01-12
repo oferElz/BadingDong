@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import FormModal from "@/components/FormModal";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+// import { role } from "@/lib/data";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 type Lecturer = {
   _id: string;
@@ -32,7 +33,7 @@ const columns = [
   {
     header: "Actions",
     accessor: "action",
-    className: "text-center pl-8", 
+    className: "text-center pl-8",
   },
 ];
 
@@ -41,6 +42,10 @@ const LecturersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const role = session?.user?.role;
 
   useEffect(() => {
     const fetchLecturers = async () => {
@@ -72,7 +77,8 @@ const LecturersList = () => {
       lecturer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lecturer.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lecturer.lecturer_id.includes(searchQuery) ||
-      (lecturer.courses.length === 0 && "none".includes(searchQuery.toLowerCase())) ||
+      (lecturer.courses.length === 0 &&
+        "none".includes(searchQuery.toLowerCase())) ||
       lecturer.courses.some((course) =>
         course.toLowerCase().includes(searchQuery.toLowerCase())
       )
@@ -109,7 +115,7 @@ const LecturersList = () => {
           </span>
         )}
       </td>
-      <td className="pl-8 text-center"> 
+      <td className="pl-8 text-center">
         <div className="flex items-center gap-2 justify-center">
           <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Sky">
             <Image src="/view.png" alt="" width={16} height={16} />
@@ -131,7 +137,7 @@ const LecturersList = () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
           <div className="flex items-center gap-4 self-end">
-            {role === "admin" && <FormModal table="lecturer" type="create" />}
+            {/* {role === "admin" && <FormModal table="lecturer" type="create" />} */}
           </div>
         </div>
       </div>
