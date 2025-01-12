@@ -10,13 +10,15 @@ interface Student {
 
 export default function RecordsPage() {
   const [students, setStudents] = useState<Student[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
   const searchParams = useSearchParams();
   const params = useParams(); // Add this
   const router = useRouter();
 
   // Get courseId from params and type from searchParams
-  const courseId = params.courseId as string; // Changed this line
+  const courseId = params.courseId as string;
   const type = searchParams.get("type");
 
   useEffect(() => {

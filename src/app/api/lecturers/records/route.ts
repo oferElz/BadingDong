@@ -62,11 +62,24 @@ export async function GET(request: Request) {
       })
       .toArray();
 
-    const combinedData = students.map((student) => ({
-      id: student.id,
-      name: `${student.first_name} ${student.last_name}`,
-      status: "attended",
-    }));
+    // const combinedData = students.map((student) => ({
+    //   id: student.id,
+    //   name: `${student.first_name} ${student.last_name}`,
+    //   status: "attended",
+    // }));
+
+    const combinedData = students.map((student) => {
+      // Find the attendance record for this student
+      const attendanceRecord = attendanceRecords.find(
+        (record) => record.student_id === student.id
+      );
+
+      return {
+        id: student.id,
+        name: `${student.first_name} ${student.last_name}`,
+        status: attendanceRecord ? attendanceRecord.status : "missed",
+      };
+    });
 
     return NextResponse.json(combinedData, { status: 200 });
   } catch (error) {
