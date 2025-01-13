@@ -4,10 +4,11 @@ import Image from "next/image";
 import CoursesForm from "@/components/forms/CoursesForm";
 import StudentForm from "@/components/forms/StudentForm"; 
 import LecturesForm from "./forms/LecturesForm";
+import LecturersForm from "./forms/LecturersForm";
 
 type Props = {
   mode: "create" | "update" | "delete";
-  model: "courses" | "lectures"; 
+  model: "courses" | "lectures" | "lecturers"; 
   item?: any; 
   onCreate?: (data: any) => void;
   onUpdate?: (data: any) => void;
@@ -45,6 +46,15 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
     ),
     lectures: (
       <LecturesForm
+        mode={mode}
+        item={item}
+        onClose={() => setOpen(false)}
+        onCreate={onCreate}
+        onUpdate={onUpdate}
+      />
+    ),
+    lecturers: (
+      <LecturersForm
         mode={mode}
         item={item}
         onClose={() => setOpen(false)}

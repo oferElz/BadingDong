@@ -1,149 +1,153 @@
 "use client";
 import { useState, useEffect } from "react";
-import FormModal from "@/components/FormModal";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-// import { role } from "@/lib/data";
-import Image from "next/image";
+import FormModal from "@/components/FormModal";
 import { useSession } from "next-auth/react";
 
 type Lecturer = {
   _id: string;
-  lecturer_id: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   username: string;
   courses: string[];
 };
 
-const columns = [
-  {
-    header: "Name",
-    accessor: "name",
-  },
-  {
-    header: "Lecturer ID",
-    accessor: "lecturer_id",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Courses",
-    accessor: "courses",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-    className: "text-center pl-8",
-  },
-];
-
-const LecturersList = () => {
+export default function LecturersList() {
   const [lecturersData, setLecturersData] = useState<Lecturer[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const [role, setRole] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const role = session?.user?.role;
 
   useEffect(() => {
-    const fetchLecturers = async () => {
-      try {
-        const response = await fetch("/api/lecturers");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch lecturers: ${response.status}`);
-        }
-        const data = await response.json();
-        setLecturersData(data);
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (session?.user?.role) {
+      setRole(session.user.role); // Cache the role to avoid disappearance on re-renders
+    }
+  }, [session]);
 
+  const fetchLecturers = async () => {
+    try {
+      const response = await fetch("/api/lecturers");
+      if (!response.ok) throw new Error("Failed to fetch lecturers");
+      const data = await response.json();
+      setLecturersData(data);
+    } catch (error) {
+      console.error("Error fetching lecturers:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchLecturers();
   }, []);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleCreate = async (newLecturer: Omit<Lecturer, "_id">) => {
+    try {
+      const response = await fetch("/api/lecturers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newLecturer),
+      });
+      if (!response.ok) throw new Error("Failed to create lecturer");
+      await fetchLecturers();
+      setIsCreateModalOpen(false);
+    } catch (error) {
+      console.error("Error creating lecturer:", error);
+    }
+  };
+
+  const handleUpdate = async (updatedLecturer: Lecturer) => {
+    try {
+      const response = await fetch("/api/lecturers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedLecturer),
+      });
+      if (!response.ok) throw new Error("Failed to update lecturer");
+      await fetchLecturers();
+    } catch (error) {
+      console.error("Error updating lecturer:", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await fetch("/api/lecturers", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ _id: id }),
+      });
+      if (!response.ok) throw new Error("Failed to delete lecturer");
+      await fetchLecturers();
+    } catch (error) {
+      console.error("Error deleting lecturer:", error);
+    }
+  };
 
   const filteredData = lecturersData.filter((lecturer) => {
+    const fullName = `${lecturer.first_name} ${lecturer.last_name}`;
     return (
-      lecturer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lecturer.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lecturer.lecturer_id.includes(searchQuery) ||
-      (lecturer.courses.length === 0 &&
-        "none".includes(searchQuery.toLowerCase())) ||
-      lecturer.courses.some((course) =>
-        course.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lecturer.username.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
+
+  const columns = [
+    { header: "Name", accessor: "name" },
+    { header: "Username", accessor: "username" },
+    { header: "Courses", accessor: "courses" },
+    { header: "Actions", accessor: "action" },
+  ];
 
   const renderRow = (item: Lecturer) => (
     <tr
       key={item._id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
     >
-      <td className="flex items-center gap-4 p-4">
-        <div className="flex flex-col">
-          <h3 className="font-semibold">{item.name}</h3>
-          <p className="text-xs text-gray-500">{item.username}</p>
-        </div>
+      <td className="p-4">{`${item.first_name} ${item.last_name}` || "N/A"}</td>
+      <td>{item.username || "N/A"}</td>
+      <td>
+        {item.courses.length > 0
+          ? item.courses.join(", ")
+          : "No Courses"}
       </td>
-      <td className="hidden md:table-cell">{item.lecturer_id}</td>
-      <td className="hidden md:table-cell pr-4">
-        {item.courses.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {item.courses.map((course, index) => (
-              <span
-                key={index}
-                className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded"
-              >
-                {course}
-              </span>
-            ))}
+      <td>
+        {role === "admin" && (
+          <div className="flex items-center gap-2">
+            <FormModal
+              model="lecturers"
+              mode="update"
+              item={item}
+              onUpdate={handleUpdate}
+            />
+            <FormModal
+              model="lecturers"
+              mode="delete"
+              item={item}
+              onDelete={handleDelete}
+            />
           </div>
-        ) : (
-          <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-            None
-          </span>
         )}
-      </td>
-      <td className="pl-8 text-center">
-        <div className="flex items-center gap-2 justify-center">
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Sky">
-            <Image src="/view.png" alt="" width={16} height={16} />
-          </button>
-          {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Purple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
-          )}
-        </div>
       </td>
     </tr>
   );
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">Lecturers</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-lg font-semibold">All Lecturers</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
-          <div className="flex items-center gap-4 self-end">
-            {/* {role === "admin" && <FormModal table="lecturer" type="create" />} */}
-          </div>
+          {role === "admin" && (
+            <FormModal
+              model="lecturers"
+              mode="create"
+              onCreate={handleCreate}
+            />
+          )}
         </div>
       </div>
       <Table columns={columns} renderRow={renderRow} data={filteredData} />
     </div>
   );
-};
-
-export default LecturersList;
+}

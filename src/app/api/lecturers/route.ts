@@ -2,117 +2,130 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
-interface Lecturer {
-  _id: mongoose.Types.ObjectId;
-  id: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-  type: string;
-}
-
-interface Lecture {
-  _id: mongoose.Types.ObjectId;
-  course_id: string;
-  lecturer_id: string;
-}
-
-interface Course {
-  _id: mongoose.Types.ObjectId;
-  id: string;
-  name: string;
-}
-
+// GET - Fetch all lecturers
 export async function GET() {
   try {
-    // Connect to MongoDB
     await connectToDB();
     const db = mongoose.connection.useDb("BA-DINGDONG-DB");
 
-    // Get collections
-    const usersCollection = db.collection<Lecturer>("users");
-    const lecturesCollection = db.collection<Lecture>("lectures");
-    const coursesCollection = db.collection<Course>("courses");
+    const lecturers = await db.collection("users").find({ role: "lecturer" }).toArray();
+    const lectures = await db.collection("lectures").find({}).toArray();
+    const courses = await db.collection("courses").find({}).toArray();
 
-    // Fetch lecturers
-    const lecturers = await usersCollection
-      .find({ role: "lecturer" })
-      .toArray();
-    if (!lecturers.length) {
-      return NextResponse.json(
-        { message: "No lecturers found" },
-        { status: 404 }
-      );
-    }
+    const lecturersWithCourses = lecturers.map((lecturer) => {
+      const lecturerLectures = lectures.filter((lecture) => lecture.lecturer_id === lecturer.id);
+      const courseIds = lecturerLectures.map((lecture) => lecture.course_id);
+      const lecturerCourses = courses.filter((course) => courseIds.includes(course.id)).map((course) => course.name);
 
-    // Fetch all lectures and courses
-    const lectures = await lecturesCollection.find({}).toArray();
-    const courses = await coursesCollection.find({}).toArray();
+      return {
+        _id: lecturer._id,
+        id: lecturer.id,
+        first_name: lecturer.first_name,
+        last_name: lecturer.last_name,
+        username: lecturer.username,
+        courses: lecturerCourses,
+      };
+    });
 
-    // Create a map of course IDs to course names
-    const courseMap = courses.reduce((map, course) => {
-      // Handle both possible ID formats
-      const courseId = course.id || course._id.toString();
-      if (courseId && course.name) {
-        map[courseId] = course.name;
-      }
-      return map;
-    }, {} as Record<string, string>);
-
-    // Construct lecturer objects with error handling
-    const lecturersData = lecturers
-      .map((lecturer) => {
-        try {
-          const assignedLectures = lectures.filter(
-            (lecture) =>
-              lecture &&
-              lecture.lecturer_id === (lecturer.id || lecturer._id.toString())
-          );
-
-          const courseIds = Array.from(
-            new Set(
-              assignedLectures
-                .filter((lec) => lec && lec.course_id)
-                .map((lec) => lec.course_id)
-            )
-          );
-
-          const courseNames = courseIds
-            .map((id) => courseMap[id])
-            .filter((name) => name); // Remove undefined/null course names
-
-          return {
-            _id: lecturer._id.toString(),
-            lecturer_id: lecturer.id || lecturer._id.toString(),
-            name: `${lecturer.first_name || ""} ${
-              lecturer.last_name || ""
-            }`.trim(),
-            username: lecturer.username || "",
-            courses: courseNames,
-          };
-        } catch (error) {
-          console.error(`Error processing lecturer ${lecturer._id}:`, error);
-          return null;
-        }
-      })
-      .filter(Boolean); // Remove any null entries from failed processing
-
-    if (!lecturersData.length) {
-      return NextResponse.json(
-        { message: "Failed to process lecturers data" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json(lecturersData, { status: 200 });
+    return NextResponse.json(lecturersWithCourses, { status: 200 });
   } catch (error) {
-    console.error("Error fetching lecturers data:", error);
-    return NextResponse.json(
-      {
-        message: "Failed to fetch lecturers data",
-        error: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
+    console.error("Error fetching lecturers:", error);
+    return NextResponse.json({ message: "Failed to fetch lecturers" }, { status: 500 });
+  }
+}
+
+// PUT - Create a new lecturer
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+
+    // Validate input
+    const { id, first_name, last_name, username } = body;
+    if (!id || !first_name || !last_name || !username) {
+      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    }
+
+    await connectToDB();
+    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const usersCollection = db.collection("users");
+
+    const result = await usersCollection.insertOne({
+      id,
+      first_name,
+      last_name,
+      username,
+      role: "lecturer",
+    });
+
+    return NextResponse.json({ message: "Lecturer created successfully", _id: result.insertedId }, { status: 201 });
+  } catch (error) {
+    console.error("Error creating lecturer:", error);
+    return NextResponse.json({ message: "Failed to create lecturer" }, { status: 500 });
+  }
+}
+
+// POST - Update an existing lecturer
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { _id, id, first_name, last_name, username } = body;
+
+    // Validate input
+    if (!_id || !id || !first_name || !last_name || !username) {
+      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    }
+
+    await connectToDB();
+    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const usersCollection = db.collection("users");
+
+    const result = await usersCollection.updateOne(
+      { _id: new mongoose.Types.ObjectId(_id) },
+      { $set: { id, first_name, last_name, username } }
     );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ message: "Lecturer not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Lecturer updated successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating lecturer:", error);
+    return NextResponse.json({ message: "Failed to update lecturer" }, { status: 500 });
+  }
+}
+
+// DELETE - Remove a lecturer
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
+    const { _id } = body;
+
+    if (!_id) {
+      return NextResponse.json({ message: "Missing _id" }, { status: 400 });
+    }
+
+    await connectToDB();
+    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const usersCollection = db.collection("users");
+    const lecturesCollection = db.collection("lectures");
+
+    const lecturer = await usersCollection.findOne({ _id: new mongoose.Types.ObjectId(_id) });
+    if (!lecturer) {
+      return NextResponse.json({ message: "Lecturer not found" }, { status: 404 });
+    }
+
+    const lecturerId = lecturer.id;
+
+    // Delete lecturer
+    await usersCollection.deleteOne({ _id: new mongoose.Types.ObjectId(_id) });
+
+    // Remove associated lectures
+    await lecturesCollection.deleteMany({ lecturer_id: lecturerId });
+
+    return NextResponse.json({ message: "Lecturer deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting lecturer:", error);
+    return NextResponse.json({ message: "Failed to delete lecturer" }, { status: 500 });
   }
 }
