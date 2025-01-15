@@ -38,10 +38,9 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
+    const { id, first_name, last_name, username, password } = body;
 
-    // Validate input
-    const { id, first_name, last_name, username } = body;
-    if (!id || !first_name || !last_name || !username) {
+    if (!id || !first_name || !last_name || !username || !password) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
@@ -54,6 +53,7 @@ export async function PUT(request: Request) {
       first_name,
       last_name,
       username,
+      password, // Save password for new lecturers
       role: "lecturer",
     });
 
@@ -64,14 +64,14 @@ export async function PUT(request: Request) {
   }
 }
 
+
 // POST - Update an existing lecturer
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { _id, id, first_name, last_name, username } = body;
+    const { _id, password, ...updateData } = body;
 
-    // Validate input
-    if (!_id || !id || !first_name || !last_name || !username) {
+    if (!_id || !updateData.id || !updateData.first_name || !updateData.last_name || !updateData.username) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
     const result = await usersCollection.updateOne(
       { _id: new mongoose.Types.ObjectId(_id) },
-      { $set: { id, first_name, last_name, username } }
+      { $set: updateData } // Exclude password from updates
     );
 
     if (result.matchedCount === 0) {
@@ -94,6 +94,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Failed to update lecturer" }, { status: 500 });
   }
 }
+
 
 // DELETE - Remove a lecturer
 export async function DELETE(request: Request) {

@@ -9,7 +9,11 @@ const schema = z.object({
   last_name: z.string().min(1, "Last name is required"),
   username: z.string().min(1, "Username is required"),
   id: z.string().min(1, "Lecturer ID is required"),
-  _id: z.string().optional(), // Include _id for updates, but it's optional
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .optional(), // Password is required only for creation
+  _id: z.string().optional(), // Include _id for updates, but optional
 });
 
 type FormData = z.infer<typeof schema>;
@@ -37,7 +41,8 @@ export default function LecturersForm({ mode, item, onClose, onCreate, onUpdate 
       onCreate(data); // Exclude `_id` for creation
     }
     if (mode === "update" && onUpdate) {
-      onUpdate(data); // Include `_id` for updates
+      const { password, ...updateData } = data; // Exclude `password` during updates
+      onUpdate(updateData); // Include `_id` for updates
     }
     onClose();
   };
@@ -87,6 +92,20 @@ export default function LecturersForm({ mode, item, onClose, onCreate, onUpdate 
         />
         {errors.id && <p className="text-red-500 text-sm">{errors.id.message}</p>}
       </div>
+      {mode === "create" && (
+        <div>
+          <label className="block text-sm font-medium">Password</label>
+          <input
+            {...register("password")}
+            type="password"
+            className="border p-2 w-full rounded"
+            placeholder="Enter password"
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
+        </div>
+      )}
       <div className="flex justify-end space-x-2">
         <button type="button" className="bg-gray-200 px-4 py-2 rounded" onClick={onClose}>
           Cancel
