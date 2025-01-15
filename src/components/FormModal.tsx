@@ -8,7 +8,7 @@ import LecturersForm from "./forms/LecturersForm";
 
 type Props = {
   mode: "create" | "update" | "delete";
-  model: "courses" | "lectures" | "lecturers"; 
+  model: "courses" | "lectures" | "lecturers" | "students"; 
   item?: any; 
   onCreate?: (data: any) => void;
   onUpdate?: (data: any) => void;
@@ -55,6 +55,15 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
     ),
     lecturers: (
       <LecturersForm
+        mode={mode}
+        item={item}
+        onClose={() => setOpen(false)}
+        onCreate={onCreate}
+        onUpdate={onUpdate}
+      />
+    ),
+    students: (
+      <StudentForm
         mode={mode}
         item={item}
         onClose={() => setOpen(false)}
