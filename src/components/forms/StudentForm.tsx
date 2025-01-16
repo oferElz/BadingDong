@@ -1,91 +1,133 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+// Validation schema for form data
 const schema = z.object({
-  id: z.number().optional(),
-  name: z.string().min(1),
-  code: z.number().min(1),
-  teachers: z.string()
+  id: z.string().min(1, "Student ID is required").optional(), // Required for creation only
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
+  username: z.string().min(1, "Username is required"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .optional(), // Only for creation
 });
 
 type FormData = z.infer<typeof schema>;
 
-type ClassItem = {
-  id: number;
-  name: string;
-  code: number;
-  teachers: string[];
-};
-
 type Props = {
   mode: "create" | "update" | "delete";
-  item?: ClassItem;
+  item?: FormData;
   onClose: () => void;
-  onCreate?: (data: Omit<ClassItem, "id">) => void;
-  onUpdate?: (data: ClassItem) => void;
+  onCreate?: (data: FormData) => void;
+  onUpdate?: (data: FormData) => void;
 };
 
-export default function CoursesForm({ mode, item, onClose, onCreate, onUpdate }: Props) {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+export default function StudentForm({
+  mode,
+  item,
+  onClose,
+  onCreate,
+  onUpdate,
+}: Props) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      id: item?.id,
-      name: item?.name || "",
-      code: item?.code || 1,
-      teachers: item?.teachers.join(", ") || "",
-    },
+    defaultValues: item || {}, // Preload data for update
   });
 
   const onSubmit = (data: FormData) => {
-    const teachersArray = data.teachers
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
     if (mode === "create" && onCreate) {
-      onCreate({ name: data.name, code: data.code, teachers: teachersArray });
+      onCreate(data); // Handle creation
+    } else if (mode === "update" && onUpdate) {
+      const { id, ...updatedData } = data; // Exclude ID for updates
+      onUpdate({ ...item, ...updatedData } as FormData); // Ensure `_id` remains
     }
-    if (mode === "update" && onUpdate && data.id) {
-      onUpdate({ id: data.id, name: data.name, code: data.code, teachers: teachersArray });
-    }
-    onClose();
+    onClose(); // Close modal
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <h2 className="text-xl font-bold">{mode === "create" ? "Create Class" : "Update Class"}</h2>
-      <div className="flex flex-col gap-1">
-        <label>Class Name</label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {mode === "create" && (
+        <div>
+          <label className="block text-sm font-medium">Student ID</label>
+          <input
+            {...register("id")}
+            className="border p-2 w-full rounded"
+            placeholder="Enter student ID"
+          />
+          {errors.id && (
+            <p className="text-red-500 text-sm">{errors.id.message}</p>
+          )}
+        </div>
+      )}
+      <div>
+        <label className="block text-sm font-medium">First Name</label>
         <input
-          {...register("name")}
-          className="border p-2 rounded"
-          placeholder="Class name"
+          {...register("first_name")}
+          className="border p-2 w-full rounded"
+          placeholder="Enter first name"
         />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+        {errors.first_name && (
+          <p className="text-red-500 text-sm">{errors.first_name.message}</p>
+        )}
       </div>
-      <div className="flex flex-col gap-1">
-        <label>Course Code</label>
+      <div>
+        <label className="block text-sm font-medium">Last Name</label>
         <input
-          type="number"
-          {...register("code", { valueAsNumber: true })}
-          className="border p-2 rounded"
-          placeholder="1234"
+          {...register("last_name")}
+          className="border p-2 w-full rounded"
+          placeholder="Enter last name"
         />
-        {errors.code && <p className="text-red-500 text-sm">{errors.code.message}</p>}
+        {errors.last_name && (
+          <p className="text-red-500 text-sm">{errors.last_name.message}</p>
+        )}
       </div>
-      <div className="flex flex-col gap-1">
-        <label>Teachers (comma-separated)</label>
+      <div>
+        <label className="block text-sm font-medium">Username</label>
         <input
-          {...register("teachers")}
-          className="border p-2 rounded"
-          placeholder="Alice, Bob"
+          {...register("username")}
+          className="border p-2 w-full rounded"
+          placeholder="Enter username"
         />
-        {errors.teachers && <p className="text-red-500 text-sm">{errors.teachers.message}</p>}
+        {errors.username && (
+          <p className="text-red-500 text-sm">{errors.username.message}</p>
+        )}
       </div>
-      <button className="bg-blue-500 text-white p-2 rounded">
-        {mode === "create" ? "Create" : "Update"}
-      </button>
+      {mode === "create" && (
+        <div>
+          <label className="block text-sm font-medium">Password</label>
+          <input
+            {...register("password")}
+            type="password"
+            className="border p-2 w-full rounded"
+            placeholder="Enter password"
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
+        </div>
+      )}
+      <div className="flex justify-end space-x-2">
+        <button
+          type="button"
+          className="bg-gray-200 px-4 py-2 rounded"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          {mode === "create" ? "Create" : "Update"}
+        </button>
+      </div>
     </form>
   );
 }
