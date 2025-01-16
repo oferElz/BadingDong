@@ -69,7 +69,16 @@ export default function LecturerAppealsPage() {
       <td>{item.lecture_time}</td>
       <td>{item.lecture_type}</td>
       <td>{item.student_id}</td>
-      <td>{item.appeal_reason}</td>
+      <td className="p-4 align-top">
+        <div
+            className="bg-white p-2 leading-relaxed ring-1 ring-gray-200 rounded-md text-sm 
+                    whitespace-pre-wrap break-words overflow-y-auto max-w-lg"
+            style={{ maxHeight: "150px" }}>
+            {item.appeal_reason}
+        </div>
+      </td>
+
+
       <td>
         <div className="flex items-center gap-2">
           <button
