@@ -1,60 +1,46 @@
-"use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+"use client"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
-// Validation schema
 const schema = z.object({
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
-  username: z.string().min(1, "Username is required"),
-  id: z.string().min(1, "Lecturer ID is required"),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .optional(), // Password is required only for creation
-  _id: z.string().optional(), // Include _id for updates, but optional
-});
+  first_name: z.string().min(1),
+  last_name: z.string().min(1),
+  username: z.string().min(1),
+  id: z.string().min(1),
+  password: z.string().min(6).optional(),
+  _id: z.string().optional(),
+})
 
-type FormData = z.infer<typeof schema>;
+type FormData = z.infer<typeof schema>
 
 type Props = {
-  mode: "create" | "update" | "delete";
-  item?: FormData;
-  onClose: () => void;
-  onCreate?: (data: Omit<FormData, "_id">) => void;
-  onUpdate?: (data: FormData) => void;
-};
+  mode: "create" | "update" | "delete"
+  item?: FormData
+  onClose: () => void
+  onCreate?: (data: Omit<FormData, "_id">) => void
+  onUpdate?: (data: FormData) => void
+}
 
 export default function LecturersForm({ mode, item, onClose, onCreate, onUpdate }: Props) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: item || {}, // Default values based on the item
-  });
+    defaultValues: item || {}
+  })
 
   const onSubmit = (data: FormData) => {
-    if (mode === "create" && onCreate) {
-      onCreate(data); // Exclude `_id` for creation
-    }
+    if (mode === "create" && onCreate) onCreate(data)
     if (mode === "update" && onUpdate) {
-      const { password, ...updateData } = data; // Exclude `password` during updates
-      onUpdate(updateData); // Include `_id` for updates
+      const { password, ...rest } = data
+      onUpdate(rest)
     }
-    onClose();
-  };
+    onClose()
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {mode === "update" && item?._id && (
-        <input
-          type="hidden"
-          value={item._id} // Pass `_id` for updates
-          {...register("_id")}
-        />
+        <input type="hidden" value={item._id} {...register("_id")} />
       )}
       <div>
         <label className="block text-sm font-medium">First Name</label>
@@ -89,6 +75,7 @@ export default function LecturersForm({ mode, item, onClose, onCreate, onUpdate 
           {...register("id")}
           className="border p-2 w-full rounded"
           placeholder="Enter lecturer ID"
+          disabled={mode === "update"}
         />
         {errors.id && <p className="text-red-500 text-sm">{errors.id.message}</p>}
       </div>
@@ -101,9 +88,7 @@ export default function LecturersForm({ mode, item, onClose, onCreate, onUpdate 
             className="border p-2 w-full rounded"
             placeholder="Enter password"
           />
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
-          )}
+          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
         </div>
       )}
       <div className="flex justify-end space-x-2">
@@ -115,5 +100,5 @@ export default function LecturersForm({ mode, item, onClose, onCreate, onUpdate 
         </button>
       </div>
     </form>
-  );
+  )
 }

@@ -1,74 +1,90 @@
-"use client";
-import { useState, useEffect } from "react";
-import Table from "@/components/Table";
-import TableSearch from "@/components/TableSearch";
-import FormModal from "@/components/FormModal";
-import { useSession } from "next-auth/react";
+"use client"
+import { useState, useEffect } from "react"
+import Table from "@/components/Table"
+import TableSearch from "@/components/TableSearch"
+import FormModal from "@/components/FormModal"
+import { useSession } from "next-auth/react"
 
 type Lecturer = {
-  _id: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-  courses: string[];
-};
+  _id: string
+  first_name: string
+  last_name: string
+  username: string
+  id?: string
+  courses: string[]
+}
 
 export default function LecturersList() {
-  const [lecturersData, setLecturersData] = useState<Lecturer[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [role, setRole] = useState<string | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const { data: session } = useSession();
+  const [lecturersData, setLecturersData] = useState<Lecturer[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [role, setRole] = useState<string | null>(null)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const { data: session } = useSession()
 
   useEffect(() => {
-    if (session?.user?.role) {
-      setRole(session.user.role); // Cache the role to avoid disappearance on re-renders
-    }
-  }, [session]);
+    if (session?.user?.role) setRole(session.user.role)
+  }, [session])
 
   const fetchLecturers = async () => {
     try {
-      const response = await fetch("/api/lecturers");
-      if (!response.ok) throw new Error("Failed to fetch lecturers");
-      const data = await response.json();
-      setLecturersData(data);
+      const response = await fetch("/api/lecturers")
+      if (!response.ok) throw new Error("Failed to fetch lecturers")
+      const data = await response.json()
+      setLecturersData(data)
     } catch (error) {
-      console.error("Error fetching lecturers:", error);
+      console.error("Error fetching lecturers:", error)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchLecturers();
-  }, []);
+    fetchLecturers()
+  }, [])
 
   const handleCreate = async (newLecturer: Omit<Lecturer, "_id">) => {
+    if (lecturersData.find(i => i.id?.toLowerCase() === newLecturer.id?.toLowerCase())) {
+      alert("A lecturer with this ID already exists.")
+      return
+    }
+    if (lecturersData.find(i => i.username.toLowerCase() === newLecturer.username.toLowerCase())) {
+      alert("A lecturer with this username already exists.")
+      return
+    }
     try {
       const response = await fetch("/api/lecturers", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newLecturer),
-      });
-      if (!response.ok) throw new Error("Failed to create lecturer");
-      await fetchLecturers();
-      setIsCreateModalOpen(false);
+      })
+      if (!response.ok) throw new Error("Failed to create lecturer")
+      await fetchLecturers()
+      setIsCreateModalOpen(false)
     } catch (error) {
-      console.error("Error creating lecturer:", error);
+      console.error("Error creating lecturer:", error)
     }
-  };
+  }
 
   const handleUpdate = async (updatedLecturer: Lecturer) => {
+    if (lecturersData.find(i => i.id?.toLowerCase() === updatedLecturer.id?.toLowerCase())) {
+      alert("A lecturer with this ID already exists.")
+      return
+    }
+    if (lecturersData.find(i => i.username.toLowerCase() === updatedLecturer.username.toLowerCase())) {
+      alert("A lecturer with this username already exists.")
+      return
+    }
+    const { id, ...rest } = updatedLecturer
     try {
       const response = await fetch("/api/lecturers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedLecturer),
-      });
-      if (!response.ok) throw new Error("Failed to update lecturer");
-      await fetchLecturers();
+        body: JSON.stringify(rest),
+      })
+      if (!response.ok) throw new Error("Failed to update lecturer")
+      await fetchLecturers()
     } catch (error) {
-      console.error("Error updating lecturer:", error);
+      console.error("Error updating lecturer:", error)
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -76,61 +92,44 @@ export default function LecturersList() {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ _id: id }),
-      });
-      if (!response.ok) throw new Error("Failed to delete lecturer");
-      await fetchLecturers();
+      })
+      if (!response.ok) throw new Error("Failed to delete lecturer")
+      await fetchLecturers()
     } catch (error) {
-      console.error("Error deleting lecturer:", error);
+      console.error("Error deleting lecturer:", error)
     }
-  };
+  }
 
-  const filteredData = lecturersData.filter((lecturer) => {
-    const fullName = `${lecturer.first_name} ${lecturer.last_name}`;
+  const filteredData = lecturersData.filter(l => {
+    const fullName = `${l.first_name} ${l.last_name}`
     return (
       fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lecturer.username.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+      l.username.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  })
 
   const columns = [
     { header: "Name", accessor: "name" },
     { header: "Username", accessor: "username" },
     { header: "Courses", accessor: "courses" },
     { header: "Actions", accessor: "action" },
-  ];
+  ]
 
   const renderRow = (item: Lecturer) => (
-    <tr
-      key={item._id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
-    >
-      <td className="p-4">{`${item.first_name} ${item.last_name}` || "N/A"}</td>
-      <td>{item.username || "N/A"}</td>
-      <td>
-        {item.courses.length > 0
-          ? item.courses.join(", ")
-          : "No Courses"}
-      </td>
+    <tr key={item._id} className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight">
+      <td className="p-4">{`${item.first_name} ${item.last_name}`}</td>
+      <td>{item.username}</td>
+      <td>{item.courses.length > 0 ? item.courses.join(", ") : "No Courses"}</td>
       <td>
         {role === "admin" && (
           <div className="flex items-center gap-2">
-            <FormModal
-              model="lecturers"
-              mode="update"
-              item={item}
-              onUpdate={handleUpdate}
-            />
-            <FormModal
-              model="lecturers"
-              mode="delete"
-              item={item}
-              onDelete={handleDelete}
-            />
+            <FormModal model="lecturers" mode="update" item={item} onUpdate={handleUpdate} />
+            <FormModal model="lecturers" mode="delete" item={item} onDelete={handleDelete} />
           </div>
         )}
       </td>
     </tr>
-  );
+  )
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -138,16 +137,10 @@ export default function LecturersList() {
         <h1 className="text-lg font-semibold">All Lecturers</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
-          {role === "admin" && (
-            <FormModal
-              model="lecturers"
-              mode="create"
-              onCreate={handleCreate}
-            />
-          )}
+          {role === "admin" && <FormModal model="lecturers" mode="create" onCreate={handleCreate} />}
         </div>
       </div>
       <Table columns={columns} renderRow={renderRow} data={filteredData} />
     </div>
-  );
+  )
 }

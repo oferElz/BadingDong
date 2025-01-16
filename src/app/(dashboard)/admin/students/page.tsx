@@ -45,6 +45,14 @@ export default function StudentListPage() {
   });
 
   const handleCreate = async (newStudent: Omit<Student, "_id">) => {
+    if (studentsData.find(i => i.id?.toLowerCase() === newStudent.id?.toLowerCase())) {
+      alert("A lecturer with this ID already exists.")
+      return
+    }
+    if (studentsData.find(i => i.username.toLowerCase() === newStudent.username.toLowerCase())) {
+      alert("A lecturer with this username already exists.")
+      return
+    }
     try {
       const response = await fetch("/api/students", {
         method: "PUT",
@@ -62,6 +70,14 @@ export default function StudentListPage() {
   };
 
   const handleUpdate = async (updatedStudent: Student) => {
+    if (studentsData.find(i => i.id?.toLowerCase() === updatedStudent.id?.toLowerCase())) {
+      alert("A lecturer with this ID already exists.")
+      return
+    }
+    if (studentsData.find(i => i.username.toLowerCase() === updatedStudent.username.toLowerCase())) {
+      alert("A lecturer with this username already exists.")
+      return
+    }
     try {
       const response = await fetch("/api/students", {
         method: "POST",
