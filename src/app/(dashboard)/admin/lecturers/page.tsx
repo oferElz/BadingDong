@@ -64,20 +64,29 @@ export default function LecturersList() {
   }
 
   const handleUpdate = async (updatedLecturer: Lecturer) => {
-    if (lecturersData.find(i => i.id?.toLowerCase() === updatedLecturer.id?.toLowerCase())) {
+    const conflictId = lecturersData.find(
+      i =>
+        i._id !== updatedLecturer._id &&
+        i.id?.toLowerCase() === updatedLecturer.id?.toLowerCase()
+    )
+    if (conflictId) {
       alert("A lecturer with this ID already exists.")
       return
     }
-    if (lecturersData.find(i => i.username.toLowerCase() === updatedLecturer.username.toLowerCase())) {
+    const conflictUsername = lecturersData.find(
+      i =>
+        i._id !== updatedLecturer._id &&
+        i.username.toLowerCase() === updatedLecturer.username.toLowerCase()
+    )
+    if (conflictUsername) {
       alert("A lecturer with this username already exists.")
       return
     }
-    const { id, ...rest } = updatedLecturer
     try {
       const response = await fetch("/api/lecturers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(rest),
+        body: JSON.stringify(updatedLecturer),
       })
       if (!response.ok) throw new Error("Failed to update lecturer")
       await fetchLecturers()
@@ -137,7 +146,9 @@ export default function LecturersList() {
         <h1 className="text-lg font-semibold">All Lecturers</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
-          {role === "admin" && <FormModal model="lecturers" mode="create" onCreate={handleCreate} />}
+          {role === "admin" && (
+            <FormModal model="lecturers" mode="create" onCreate={handleCreate} />
+          )}
         </div>
       </div>
       <Table columns={columns} renderRow={renderRow} data={filteredData} />
