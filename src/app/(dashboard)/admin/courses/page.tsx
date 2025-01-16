@@ -55,8 +55,10 @@ export default function ClassListPage() {
   }
 
   const handleUpdate = async (updatedItem: ClassItem) => {
-    const exists = classList.find(i => i.id.toLowerCase() === updatedItem.id.toLowerCase())
-    if (exists) {
+    const conflict = classList.find(
+      i => i._id !== updatedItem._id && i.id.toLowerCase() === updatedItem.id.toLowerCase()
+    )
+    if (conflict) {
       alert("A course with this code already exists.")
       return
     }
