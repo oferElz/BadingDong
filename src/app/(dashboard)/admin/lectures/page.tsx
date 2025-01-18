@@ -220,11 +220,11 @@ export default function LecturesPage() {
   };
 
   return (
-    <div className="bg-white dark:bg-dark-surface p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">Lectures</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
           <div className="flex items-center gap-4 self-end">
             {/* Create Lecture Modal */}

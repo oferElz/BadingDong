@@ -25,7 +25,7 @@ const menuItems: {
         icon: "/home.png",
         label: "Home",
         action: "home",
-        visible: ["admin", "teacher", "student"],
+        visible: ["admin", "lecturer", "student"],
       },
       {
         icon: "/Lecturers.png",
@@ -52,7 +52,7 @@ const menuItems: {
         visible: ["admin"],
       },
       {
-        icon: "/Appeals.png",
+        icon: "/Appeals.svg",
         label: "Appeals",
         href: "/Appeals",
         visible: ["lecturer", "student"],
@@ -142,7 +142,7 @@ const Menu = () => {
     <div className="mt-4 text-sm">
       {updatedMenuItems.map((section) => (
         <div className="flex flex-col gap-2" key={section.title}>
-          <span className="hidden lg:block text-gray-400 dark:text-gray-500 font-light my-4">
+          <span className="hidden xl:block text-gray-400 dark:text-gray-500 font-light my-4">
             {section.title}
           </span>
           {section.items.map((item) => {
@@ -162,7 +162,7 @@ const Menu = () => {
                       width={20}
                       height={20}
                     />
-                    <span className="hidden lg:block">{item.label}</span>
+                    <span className="hidden xl:block">{item.label}</span>
                   </button>
                 );
               } else if (roleBasedPath) {
@@ -178,7 +178,7 @@ const Menu = () => {
                       width={20}
                       height={20}
                     />
-                    <span className="hidden lg:block">{item.label}</span>
+                    <span className="hidden xl:block">{item.label}</span>
                   </Link>
                 );
               }

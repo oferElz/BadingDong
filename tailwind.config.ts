@@ -24,6 +24,7 @@ const config: Config = {
         "dark-background": "#121212",
         "grey-background": "#2e2d2d",
         "dark-surface": "#1E1E1E",
+        "dark-container": "#212121",
         "dark-Sky": "#2C5363",
         "dark-SkyLight": "#335561",
         "dark-Purple": "#383866",

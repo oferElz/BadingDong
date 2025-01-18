@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams, useParams } from "next/navigation"; // Add useParams
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import TableSearch from "@/components/TableSearch";
 import Image from "next/image";
 
@@ -17,6 +17,7 @@ export default function RecordsPage() {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
+
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
@@ -81,8 +82,8 @@ export default function RecordsPage() {
       if (!response.ok) throw new Error("Failed to update attendance");
 
       // Update local state
-      setStudents(
-        students.map((student) =>
+      setStudents((prev) =>
+        prev.map((student) =>
           student.id === studentId ? { ...student, status: newStatus } : student
         )
       );
@@ -115,10 +116,12 @@ export default function RecordsPage() {
       });
 
       if (!response.ok) throw new Error("Failed to create records");
+
+      // If today's date is the selected one, force refetch
       const today = new Date().toISOString().split("T")[0];
       if (selectedDate === today) {
-        setSelectedDate(""); // Clear it first
-        setTimeout(() => setSelectedDate(today), 10); // Set it back after a tiny delay
+        setSelectedDate(""); // Clear first
+        setTimeout(() => setSelectedDate(today), 10); // Re-set after a tiny delay
       }
     } catch (error) {
       console.error("Error:", error);
@@ -145,7 +148,8 @@ export default function RecordsPage() {
       });
 
       if (!response.ok) throw new Error("Failed to delete records");
-      // Optimistically update local state - clear records for today
+
+      // Clear records for today if today's date is selected
       if (selectedDate === new Date().toISOString().split("T")[0]) {
         setStudents([]);
         setFilteredStudents([]);
@@ -156,15 +160,17 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="bg-white dark:bg-dark-container text-black dark:text-dark-text p-6 rounded-md m-4">
+      {/* Header Section */}
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold mb-2">Attendance Records</h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             {courseId} / {type}
           </p>
         </div>
         <div className="flex flex-col gap-3 items-end">
+          {/* Top Right Icons + Search */}
           <div className="flex items-center gap-2">
             <TableSearch value={searchTerm} onChange={setSearchTerm} />
             <Image
@@ -184,47 +190,59 @@ export default function RecordsPage() {
               onClick={handleDeleteRecords}
             />
           </div>
+          {/* Date Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium">Filter by Date:</label>
+            <label className="text-sm font-medium dark:text-gray-300">
+              Filter by Date:
+            </label>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => handleDateChange(e.target.value)}
-              className="border rounded px-3 py-2"
+              className="border dark:border-gray-700 dark:bg-dark-surface rounded px-3 py-2 text-sm"
               max="9999-12-31"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
+      {/* Table Container */}
+      <div className="bg-white dark:bg-grey-background rounded-lg shadow">
         <table className="min-w-full">
           <thead>
-            <tr className="bg-gray-50">
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+            {/* Table Head Row in Light & Dark */}
+            <tr className="bg-gray-50 dark:bg-dark-surface">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                 ID
               </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                 Status
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {filteredStudents.map((student) => (
               <tr key={student.id}>
                 <td className="px-6 py-4 whitespace-nowrap">{student.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{student.id}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
+                  {/* Attendance Toggle Button */}
                   <button
                     onClick={() => toggleAttendance(student.id, student.status)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium ${
-                      student.status === "attended"
-                        ? "bg-green-100 text-green-800 hover:bg-green-200"
-                        : "bg-red-100 text-red-800 hover:bg-red-200"
-                    }`}
+                    className={`
+                      px-4 py-2 rounded-full text-sm font-medium
+                      transition-colors
+                      ${
+                        student.status === "attended"
+                          ? // Light-mode attended
+                            "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800 dark:text-green-100 dark:hover:bg-green-700"
+                          : // Light-mode missed
+                            "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800 dark:text-red-100 dark:hover:bg-red-700"
+                      }
+                    `}
                   >
                     {student.status}
                   </button>
@@ -233,8 +251,9 @@ export default function RecordsPage() {
             ))}
           </tbody>
         </table>
+
         {filteredStudents.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             {searchTerm
               ? "No matching records found"
               : `No records found ${

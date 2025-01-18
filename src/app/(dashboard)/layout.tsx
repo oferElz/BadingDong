@@ -7,9 +7,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen flex bg-background dark:bg-dark-background">
+    <div className="min-h-screen flex bg-background dark:bg-dark-background">
       {/* LEFT */}
-      <div className="w-[10%] md:w-[8%] lg:w-[10%] xl:w-[10%] p-4 bg-surface dark:bg-grey-background">
+      <div className="min-w-[80px] w-[8%] md:w-[8%] lg:w-[8%] xl:w-[10%] p-4 bg-surface dark:bg-grey-background flex flex-col items-center">
         <div className="flex items-center justify-center lg:justify-start bg-transparent">
           <Image 
             src="/BadingDong.png" 
@@ -21,7 +21,7 @@ export default function DashboardLayout({
         <Menu />
       </div>
       {/* RIGHT */}
-      <div className="w-[90%] md:w-[92%] lg:w-[90%] xl:w-[90%] bg-background dark:bg-dark-surface overflow-scroll flex flex-col">
+      <div className="min-w-[440px] w-[92%] md:w-[92%] lg:w-[92%] xl:w-[90%] bg-background dark:bg-dark-surface overflow-y-auto overflow-x-auto flex flex-col">
         {children}
       </div>
     </div>
