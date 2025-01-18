@@ -1,24 +1,21 @@
-"use client"; // Required for client-side navigation
+"use client";
 
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
-// import { role } from "@/app/page";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { navigateUser } from "@/lib/navigation"; // Import the utility function
 import { signOut, useSession } from "next-auth/react";
+import { useState, useEffect } from 'react';
 
-// Define Action type for specific actions
-type Action = "home" | "logout";
+type Action = "home" | "logout" | "darkmode";
 
-// Define the structure of menu items
 const menuItems: {
   title: string;
   items: {
     icon: string;
     label: string;
-    action?: Action; // Optional action field
-    href?: string; // Optional href field
-    visible: string[]; // Roles that can see the item
+    action?: Action;
+    href?: string;
+    visible: string[];
   }[];
 }[] = [
   {
@@ -49,7 +46,7 @@ const menuItems: {
         visible: ["admin", "lecturer", "student"],
       },
       {
-        icon: "/Lectures.png",
+        icon: "/class.png",
         label: "Lectures",
         href: "/lectures",
         visible: ["admin"],
@@ -72,9 +69,9 @@ const menuItems: {
         visible: ["lecturer", "student"],
       },
       {
-        icon: "/darkmode.png",
-        label: "darkmode",
-        action: "logout",
+        icon: "/moon.svg", // Default icon is moon
+        label: "Dark Mode", // Default label
+        action: "darkmode",
         visible: ["admin", "lecturer", "student"],
       },
       {
@@ -88,57 +85,105 @@ const menuItems: {
 ];
 
 const Menu = () => {
-  const router = useRouter(); // Use useRouter for navigation
+  const router = useRouter();
   const { data: session } = useSession();
   const userRole = session?.user?.role?.toLowerCase() || "";
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Initialize theme on component mount
+  useEffect(() => {
+    // Check if user has a theme preference stored
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    setIsDarkMode(savedTheme === 'dark' || (!savedTheme && prefersDark));
+    
+    // Apply the initial theme
+    document.documentElement.classList.toggle('dark', savedTheme === 'dark' || (!savedTheme && prefersDark));
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    
+    // Toggle the dark class on the html element
+    document.documentElement.classList.toggle('dark', newDarkMode);
+    
+    // Save the preference
+    localStorage.setItem('theme', newDarkMode ? 'dark' : 'light');
+  };
 
   const handleAction = (action: Action) => {
-    if (action === "logout" || action === "home") {
+    if (action === "logout") {
       signOut({ callbackUrl: "/" });
-      // navigateUser(router, action, role); // Call the utility function for the given action
+    } else if (action === "home") {
+      router.push(`/${userRole}`);
+    } else if (action === "darkmode") {
+      toggleDarkMode();
     }
   };
 
+  // Update menuItems dynamically for dark mode label & icon
+  const updatedMenuItems = menuItems.map((section) => ({
+    ...section,
+    items: section.items.map((item) => {
+      if (item.action === "darkmode") {
+        return {
+          ...item,
+          label: isDarkMode ? "Light Mode" : "Dark Mode",
+          icon: isDarkMode ? "/sun.svg" : "/moon.svg",
+        };
+      }
+      return item;
+    }),
+  }));
+
   return (
     <div className="mt-4 text-sm">
-      {menuItems.map((section) => (
+      {updatedMenuItems.map((section) => (
         <div className="flex flex-col gap-2" key={section.title}>
-          <span className="hidden lg:block text-gray-400 font-light my-4">
+          <span className="hidden lg:block text-gray-400 dark:text-gray-500 font-light my-4">
             {section.title}
           </span>
           {section.items.map((item) => {
             if (item.visible.includes(userRole)) {
-              const roleBasedPath = item.href
-                ? `/${userRole}${item.href}`
-                : null; // Add role to the path
+              const roleBasedPath = item.href ? `/${userRole}${item.href}` : null;
 
               if (item.action) {
-                // Handle items with actions (e.g., Logout, Home)
                 return (
                   <button
                     key={item.label}
                     onClick={() => item.action && handleAction(item.action)}
-                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-SkyLight"
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 dark:text-gray-300 py-2 md:px-2 rounded-md hover:bg-SkyLight dark:hover:bg-dark-SkyLight"
                   >
-                    <Image src={item.icon} alt="" width={20} height={20} />
+                    <Image 
+                      src={item.icon}
+                      alt=""
+                      width={20}
+                      height={20}
+                    />
                     <span className="hidden lg:block">{item.label}</span>
                   </button>
                 );
               } else if (roleBasedPath) {
-                // Handle items with links
                 return (
                   <Link
-                    href={roleBasedPath} // Use the role-based path
+                    href={roleBasedPath}
                     key={item.label}
-                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-SkyLight"
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 dark:text-gray-300 py-2 md:px-2 rounded-md hover:bg-SkyLight dark:hover:bg-dark-SkyLight"
                   >
-                    <Image src={item.icon} alt="" width={20} height={20} />
+                    <Image 
+                      src={item.icon}
+                      alt=""
+                      width={20}
+                      height={20}
+                    />
                     <span className="hidden lg:block">{item.label}</span>
                   </Link>
                 );
               }
             }
-            return null; // Return null if the item is not visible
+            return null;
           })}
         </div>
       ))}

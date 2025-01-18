@@ -15,7 +15,7 @@ const TableSearch = ({ value = "", onChange }: TableSearchProps) => {
         placeholder="Search..."
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className="w-[200px] p-2 bg-transparent outline-none"
+        className="w-[200px] p-2 bg-transparent outline-none text-black dark:text-white"
       />
     </div>
   );
