@@ -53,8 +53,8 @@ const AdminPage = () => {
               </h2>
               <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
                 <li>Use the sidebar menu to navigate between different sections</li>
-                <li>You can return to your home page from each section by pressing 'home' button</li>
-                <li>On the bottom corner of the sidebar you can toggle dark\light mode</li>
+                <li>You can return to your home page from each section by pressing &apos;home&apos; button</li>
+                <li>On the bottom corner of the sidebar you can toggle dark&#92;light mode</li>
               </ul>
             </div>
           </div>
