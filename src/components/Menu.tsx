@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 type Action = "home" | "logout" | "darkmode";
 
@@ -54,7 +54,7 @@ const menuItems: {
       {
         icon: "/Appeals.svg",
         label: "Appeals",
-        href: "/Appeals",
+        href: "/appeals",
         visible: ["lecturer", "student"],
       },
     ],
@@ -93,24 +93,29 @@ const Menu = () => {
   // Initialize theme on component mount
   useEffect(() => {
     // Check if user has a theme preference stored
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    setIsDarkMode(savedTheme === 'dark' || (!savedTheme && prefersDark));
-    
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
+    setIsDarkMode(savedTheme === "dark" || (!savedTheme && prefersDark));
+
     // Apply the initial theme
-    document.documentElement.classList.toggle('dark', savedTheme === 'dark' || (!savedTheme && prefersDark));
+    document.documentElement.classList.toggle(
+      "dark",
+      savedTheme === "dark" || (!savedTheme && prefersDark)
+    );
   }, []);
 
   const toggleDarkMode = () => {
     const newDarkMode = !isDarkMode;
     setIsDarkMode(newDarkMode);
-    
+
     // Toggle the dark class on the html element
-    document.documentElement.classList.toggle('dark', newDarkMode);
-    
+    document.documentElement.classList.toggle("dark", newDarkMode);
+
     // Save the preference
-    localStorage.setItem('theme', newDarkMode ? 'dark' : 'light');
+    localStorage.setItem("theme", newDarkMode ? "dark" : "light");
   };
 
   const handleAction = (action: Action) => {
@@ -147,7 +152,9 @@ const Menu = () => {
           </span>
           {section.items.map((item) => {
             if (item.visible.includes(userRole)) {
-              const roleBasedPath = item.href ? `/${userRole}${item.href}` : null;
+              const roleBasedPath = item.href
+                ? `/${userRole}${item.href}`
+                : null;
 
               if (item.action) {
                 return (
@@ -156,12 +163,7 @@ const Menu = () => {
                     onClick={() => item.action && handleAction(item.action)}
                     className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 dark:text-gray-300 py-2 md:px-2 rounded-md hover:bg-SkyLight dark:hover:bg-dark-SkyLight"
                   >
-                    <Image 
-                      src={item.icon}
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
+                    <Image src={item.icon} alt="" width={20} height={20} />
                     <span className="hidden xl:block">{item.label}</span>
                   </button>
                 );
@@ -172,12 +174,7 @@ const Menu = () => {
                     key={item.label}
                     className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 dark:text-gray-300 py-2 md:px-2 rounded-md hover:bg-SkyLight dark:hover:bg-dark-SkyLight"
                   >
-                    <Image 
-                      src={item.icon}
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
+                    <Image src={item.icon} alt="" width={20} height={20} />
                     <span className="hidden xl:block">{item.label}</span>
                   </Link>
                 );
