@@ -83,21 +83,21 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
       </button>
       {open && (
         <div className="w-screen h-screen fixed left-0 top-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
+          <div className="bg-white dark:bg-dark-surface p-4 rounded-md relative w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
             {mode === "delete" && item ? (
               <div className="p-4 flex flex-col gap-4">
-                <span className="text-center font-medium">
+                <span className="text-center font-medium text-black dark:text-dark-text">
                   Are you sure you want to delete {item.name || item.id}?
                 </span>
                 <button
                   onClick={handleDelete}
-                  className="bg-red-700 text-white py-2 px-4 rounded-md w-max self-center"
+                  className="bg-red-700 dark:bg-red-800 text-white dark:text-dark-text py-2 px-4 rounded-md w-max self-center"
                 >
                   Delete
                 </button>
               </div>
             ) : (
-              formMap[model] || <p>Unsupported model: {model}</p>
+              formMap[model] || <p className="text-black dark:text-dark-text">Unsupported model: {model}</p>
             )}
             <div
               className="absolute top-4 right-4 cursor-pointer"

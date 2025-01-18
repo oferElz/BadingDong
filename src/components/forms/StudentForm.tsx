@@ -3,16 +3,15 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// Validation schema for form data
 const schema = z.object({
-  id: z.string().min(1, "Student ID is required").optional(), // Required for creation only
+  id: z.string().min(1, "Student ID is required").optional(),
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
   username: z.string().min(1, "Username is required"),
   password: z
     .string()
     .min(6, "Password must be at least 6 characters")
-    .optional(), // Only for creation
+    .optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -38,31 +37,31 @@ export default function StudentForm({
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: item || {}, // Preload data for update
+    defaultValues: item || {},
   });
 
   const onSubmit = (data: FormData) => {
     if (mode === "create" && onCreate) {
-      onCreate(data); // Handle creation
+      onCreate(data);
     } else if (mode === "update" && onUpdate) {
-      const { id, ...updatedData } = data; // Exclude ID for updates
-      onUpdate({ ...item, ...updatedData } as FormData); // Ensure `_id` remains
+      const { id, ...updatedData } = data;
+      onUpdate({ ...item, ...updatedData } as FormData);
     }
-    onClose(); // Close modal
+    onClose();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
       {mode === "create" && (
         <div>
           <label className="block text-sm font-medium">Student ID</label>
           <input
             {...register("id")}
-            className="border p-2 w-full rounded"
+            className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
             placeholder="Enter student ID"
           />
           {errors.id && (
-            <p className="text-red-500 text-sm">{errors.id.message}</p>
+            <p className="text-red-500 dark:text-red-400 text-sm">{errors.id.message}</p>
           )}
         </div>
       )}
@@ -70,33 +69,34 @@ export default function StudentForm({
         <label className="block text-sm font-medium">First Name</label>
         <input
           {...register("first_name")}
-          className="border p-2 w-full rounded"
+          className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
           placeholder="Enter first name"
         />
         {errors.first_name && (
-          <p className="text-red-500 text-sm">{errors.first_name.message}</p>
+          <p className="text-red-500 dark:text-red-400 text-sm">{errors.first_name.message}</p>
         )}
       </div>
       <div>
         <label className="block text-sm font-medium">Last Name</label>
         <input
           {...register("last_name")}
-          className="border p-2 w-full rounded"
+          className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
           placeholder="Enter last name"
         />
         {errors.last_name && (
-          <p className="text-red-500 text-sm">{errors.last_name.message}</p>
+          <p className="text-red-500 dark:text-red-400 text-sm">{errors.last_name.message}</p>
         )}
       </div>
       <div>
         <label className="block text-sm font-medium">Username</label>
         <input
           {...register("username")}
-          className="border p-2 w-full rounded"
+          className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
           placeholder="Enter username"
+          disabled={mode === "update"}
         />
         {errors.username && (
-          <p className="text-red-500 text-sm">{errors.username.message}</p>
+          <p className="text-red-500 dark:text-red-400 text-sm">{errors.username.message}</p>
         )}
       </div>
       {mode === "create" && (
@@ -105,25 +105,25 @@ export default function StudentForm({
           <input
             {...register("password")}
             type="password"
-            className="border p-2 w-full rounded"
+            className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
             placeholder="Enter password"
           />
           {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+            <p className="text-red-500 dark:text-red-400 text-sm">{errors.password.message}</p>
           )}
         </div>
       )}
       <div className="flex justify-end space-x-2">
         <button
           type="button"
-          className="bg-gray-200 px-4 py-2 rounded"
+          className="bg-gray-200 dark:bg-grey-background px-4 py-2 rounded text-black dark:text-dark-text"
           onClick={onClose}
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 dark:bg-blue-800 text-white dark:text-dark-text px-4 py-2 rounded"
         >
           {mode === "create" ? "Create" : "Update"}
         </button>
