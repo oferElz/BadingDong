@@ -1,132 +1,152 @@
-"use client";
-import FormModal from "@/components/FormModal";
-import Table from "@/components/Table";
-import TableSearch from "@/components/TableSearch";
-import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-// import { role } from "@/lib/data";
+"use client"
+import { useState, useEffect } from "react"
+import Table from "@/components/Table"
+import TableSearch from "@/components/TableSearch"
+import FormModal from "@/components/FormModal"
+import { useSession } from "next-auth/react"
 
 type Student = {
-  username: string;
-  password: string;
-  id: string;
-  first_name: string;
-  last_name: string;
-  role: string;
-};
+  _id: string
+  first_name: string
+  last_name: string
+  username: string
+  id: string
+  role: string
+}
 
-const columns = [
-  {
-    header: "Info",
-    accessor: "info",
-  },
-  {
-    header: "Student ID",
-    accessor: "studentId",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
-];
-
-const StudentListPage = () => {
-  const [studentsData, setStudentsData] = useState<Student[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const role = session?.user?.role;
+export default function StudentListPage() {
+  const [studentsData, setStudentsData] = useState<Student[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const role = "admin"
+  const { data: session } = useSession()
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("/api/students");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch students: ${response.status}`);
-        }
-        const data = await response.json();
-        setStudentsData(data);
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
+        const response = await fetch("/api/students")
+        if (!response.ok) throw new Error("Failed to fetch students")
+        const data = await response.json()
+        setStudentsData(data)
+      } catch (error) {
+        console.error("Error fetching students:", error)
       }
-    };
+    }
+    fetchStudents()
+  }, [])
 
-    fetchStudents();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  const filteredStudents = studentsData.filter(
-    (student) =>
-      student.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  const filteredData = studentsData.filter(student => {
+    const fullName = `${student.first_name} ${student.last_name}`
+    return (
+      fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    )
+  })
+
+  const handleCreate = async (newStudent: Omit<Student, "_id">) => {
+    if (studentsData.find(i => i.id.toLowerCase() === newStudent.id.toLowerCase())) {
+      alert("A student with this ID already exists.")
+      return
+    }
+    if (studentsData.find(i => i.username.toLowerCase() === newStudent.username.toLowerCase())) {
+      alert("A student with this username already exists.")
+      return
+    }
+    try {
+      const response = await fetch("/api/students", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newStudent),
+      })
+      if (!response.ok) throw new Error("Failed to create student")
+      const updatedStudents = await fetch("/api/students").then(res => res.json())
+      setStudentsData(updatedStudents)
+    } catch (error) {
+      console.error("Error creating student:", error)
+    }
+  }
+
+  const handleUpdate = async (updatedStudent: Student) => {
+    const conflictId = studentsData.find(
+      i =>
+        i._id !== updatedStudent._id &&
+        i.id.toLowerCase() === updatedStudent.id.toLowerCase()
+    )
+    if (conflictId) {
+      alert("A student with this ID already exists.")
+      return
+    }
+    const conflictUsername = studentsData.find(
+      i =>
+        i._id !== updatedStudent._id &&
+        i.username.toLowerCase() === updatedStudent.username.toLowerCase()
+    )
+    if (conflictUsername) {
+      alert("A student with this username already exists.")
+      return
+    }
+    try {
+      const response = await fetch("/api/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedStudent),
+      })
+      if (!response.ok) throw new Error("Failed to update student")
+      const updatedStudents = await fetch("/api/students").then(res => res.json())
+      setStudentsData(updatedStudents)
+    } catch (error) {
+      console.error("Error updating student:", error)
+    }
+  }
+
+  const handleDelete = async (_id: string) => {
+    try {
+      const response = await fetch("/api/students", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ _id }),
+      })
+      if (!response.ok) throw new Error("Failed to delete student")
+      const updatedStudents = await fetch("/api/students").then(res => res.json())
+      setStudentsData(updatedStudents)
+    } catch (error) {
+      console.error("Error deleting student:", error)
+    }
+  }
+
+  const columns = [
+    { header: "Name", accessor: "name" },
+    { header: "Username", accessor: "username" },
+    { header: "Student ID", accessor: "id" },
+    { header: "Actions", accessor: "action" },
+  ]
 
   const renderRow = (item: Student) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">
-        <div className="flex flex-col">
-          <h3 className="font-semibold">{`${item.first_name} ${item.last_name}`}</h3>
-        </div>
-      </td>
+    <tr key={item._id} className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text">
+      <td className="p-4">{`${item.first_name} ${item.last_name}`}</td>
+      <td>{item.username}</td>
       <td className="hidden md:table-cell">{item.id}</td>
       <td>
-        <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-Sky">
-              <Image src="/view.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
-          {/* {role === "admin" && (
-            <FormModal table="student" type="delete" id={item.id} />
-          )} */}
-        </div>
+        {role === "admin" && (
+          <div className="flex items-center gap-2">
+            <FormModal model="students" mode="update" item={item} onUpdate={handleUpdate} />
+            <FormModal model="students" mode="delete" item={item} onDelete={handleDelete} />
+          </div>
+        )}
       </td>
     </tr>
-  );
+  )
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* TOP */}
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Students</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+    <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-lg font-semibold dark:text-dark-text">All Students</h1>
+        <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
-          <div className="flex items-center gap-4 self-end">
-            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button> */}
-            {/* {role === "admin" && (
-              // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-Yellow">
-              //   <Image src="/plus.png" alt="" width={14} height={14} />
-              // </button>
-              <FormModal table="student" type="create" />
-            )} */}
-          </div>
+          {role === "admin" && <FormModal model="students" mode="create" onCreate={handleCreate} />}
         </div>
       </div>
-      {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={filteredStudents} />
+      <Table columns={columns} renderRow={renderRow} data={filteredData} />
     </div>
-  );
-};
-
-export default StudentListPage;
+  )
+}

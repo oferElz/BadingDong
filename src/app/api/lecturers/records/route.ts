@@ -62,12 +62,6 @@ export async function GET(request: Request) {
       })
       .toArray();
 
-    // const combinedData = students.map((student) => ({
-    //   id: student.id,
-    //   name: `${student.first_name} ${student.last_name}`,
-    //   status: "attended",
-    // }));
-
     const combinedData = students.map((student) => {
       // Find the attendance record for this student
       const attendanceRecord = attendanceRecords.find(

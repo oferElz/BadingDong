@@ -8,11 +8,16 @@ export async function connectToDB() {
     return; // If already connected, avoid creating multiple connections
   }
 
+  if (!process.env.MONGODB_URI) {
+    throw new Error("MONGODB_URI is not defined in environment variables");
+  }
+
   try {
     // Replace <username>, <password>, and <dbName> with actual values
     // e.g., "mongodb+srv://admin:password@cluster0.mongodb.net/dbName"
-    await mongoose.connect("mongodb+srv://Admin:Aa123456@ba-dingdong-cluster.czez0.mongodb.net/?retryWrites=true&w=majority&appName=BA-DINGDONG-Cluster");
+    await mongoose.connect(process.env.MONGODB_URI);
     isConnected = true;
+    console.log("Connected to database:", mongoose.connection.name);
     console.log("MongoDB connected");
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
