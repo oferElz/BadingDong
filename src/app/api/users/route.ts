@@ -7,9 +7,9 @@ export async function GET() {
   try {
     await connectToDB();
     const db = mongoose.connection.useDb("BA-DINGDONG-DB");
-    
+
     const usersCollection = db.collection("users");
-    
+
     // Fetch lectures first
     const users = await usersCollection.find({}).toArray();
     return NextResponse.json(users, { status: 200 });

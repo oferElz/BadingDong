@@ -158,7 +158,7 @@ export default function LecturesPage() {
     return (
       <tr
         key={item._id}
-        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight"
+        className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text"
       >
         <td className="p-4">{item.course_id}</td>
         <td>{item.type}</td>
@@ -176,7 +176,7 @@ export default function LecturesPage() {
             onClick={() => toggleExpand(item._id)}
             className="flex items-center gap-1"
           >
-            <Image src={arrowSrc} alt="Expand" width={14} height={14} />
+            <Image src={arrowSrc} alt="Expand" width={14} height={14} className="dark:invert" />
             <span>{buttonText}</span>
           </button>
 
@@ -220,11 +220,11 @@ export default function LecturesPage() {
   };
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="hidden md:block text-lg font-semibold">Lectures</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <h1 className="text-lg font-semibold dark:text-dark-text">Lectures</h1>
+        <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
           <div className="flex items-center gap-4 self-end">
             {/* Create Lecture Modal */}

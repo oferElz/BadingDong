@@ -64,10 +64,7 @@ export const POST = async (request: Request) => {
     const { _id, ...updateData } = body;
 
     if (!_id) {
-      return NextResponse.json(
-        { error: "Missing _id" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing _id" }, { status: 400 });
     }
 
     await connectToDB();
@@ -80,10 +77,7 @@ export const POST = async (request: Request) => {
     });
 
     if (!student) {
-      return NextResponse.json(
-        { error: "Student not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
 
     // Update student details
@@ -123,10 +117,7 @@ export const DELETE = async (request: Request) => {
     });
 
     if (!student) {
-      return NextResponse.json(
-        { error: "Student not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
 
     await db.collection("users").deleteOne({

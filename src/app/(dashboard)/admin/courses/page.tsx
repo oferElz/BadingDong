@@ -96,7 +96,7 @@ export default function ClassListPage() {
   ]
 
   const renderRow = (item: ClassItem) => (
-    <tr key={item._id} className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-PurpleLight">
+    <tr key={item._id} className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text">
       <td className="p-4">{item.name}</td>
       <td className="hidden md:table-cell">{item.id}</td>
       <td>
@@ -111,10 +111,10 @@ export default function ClassListPage() {
   )
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold">All Classes</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <h1 className="text-lg font-semibold dark:text-dark-text">All Classes</h1>
+        <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
           {role === "admin" && <FormModal model="courses" mode="create" onCreate={handleCreate} />}
         </div>

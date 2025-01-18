@@ -17,6 +17,7 @@ export async function connectToDB() {
     // e.g., "mongodb+srv://admin:password@cluster0.mongodb.net/dbName"
     await mongoose.connect(process.env.MONGODB_URI);
     isConnected = true;
+    console.log("Connected to database:", mongoose.connection.name);
     console.log("MongoDB connected");
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error);
