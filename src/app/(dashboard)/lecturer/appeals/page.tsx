@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import { useSession } from "next-auth/react";
+
 
 type Appeal = {
   _id: string;
@@ -18,11 +20,16 @@ type Appeal = {
 export default function LecturerAppealsPage() {
   const [appeals, setAppeals] = useState<Appeal[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: session } = useSession();
+
 
   const fetchAppeals = async () => {
     try {
       // Now we get them from /api/lecturers/appeals?status=pending
-      const response = await fetch("/api/lecturers/appeals?status=Pending");
+      const response = await fetch(
+        `/api/lecturers/appeals?status=Pending&lecturerId=${session?.user?.id}`
+      );
+      
       if (!response.ok) throw new Error("Failed to fetch appeals");
       const data = await response.json();
       setAppeals(data);
