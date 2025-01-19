@@ -54,7 +54,7 @@ const menuItems: {
       {
         icon: "/Appeals.svg",
         label: "Appeals",
-        href: "/Appeals",
+        href: "/appeals",
         visible: ["lecturer", "student"],
       },
     ],
