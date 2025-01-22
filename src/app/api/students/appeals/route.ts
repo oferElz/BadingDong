@@ -19,13 +19,17 @@ export async function GET(request: Request) {
       .toArray()
 
     const recordIds = missedRecords.map(r => r._id.toString())
-    const existingAppeals = await appealsCollection
-      .find({ student_record_id: { $in: recordIds } })
-      .toArray()
+    const existingAppeals = await appealsCollection.find({
+      $or: [
+        { record_id: { $in: recordIds } },
+        { student_record_id: { $in: recordIds } }
+      ]
+    }).toArray();
+    
 
     const finalData = missedRecords.map(rec => {
       const foundAppeal = existingAppeals.find(a =>
-        a.student_record_id === rec._id.toString()
+        a.record_id === rec._id.toString()
       )
       return {
         ...rec,
@@ -50,11 +54,12 @@ export async function POST(request: Request) {
       lecture_time,
       lecture_type,
       lecturer,
-      student_record_id,
-      appeal_reason
+      record_id,
+      appeal_reason,
+      student_id
     } = body
 
-    if (!lecture_date || !lecture_time || !lecture_type || !lecturer || !student_record_id || !appeal_reason) {
+    if (!lecture_date || !lecture_time || !lecture_type || !lecturer || !record_id || !appeal_reason) {
       return NextResponse.json({ message: "Missing fields" }, { status: 400 })
     }
 
@@ -62,19 +67,19 @@ export async function POST(request: Request) {
     const db = mongoose.connection.useDb("BA-DINGDONG-DB")
     const appealsCollection = db.collection("appeals")
 
-    const existing = await appealsCollection.findOne({ student_record_id })
+    const existing = await appealsCollection.findOne({ record_id })
     if (existing) {
       return NextResponse.json({ message: "Appeal already exists" }, { status: 409 })
     }
 
     const newAppeal = {
-      lecture_date,
+      lecture_date: new Date(lecture_date),
       lecture_time,
       lecture_type,
       lecturer,
       appeal_date: new Date().toISOString().slice(0,10),
-      student_id: "", 
-      student_record_id,
+      student_id, 
+      record_id,
       appeal_reason,
       status: "Pending"
     }
