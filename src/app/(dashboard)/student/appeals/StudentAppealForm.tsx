@@ -1,5 +1,6 @@
 "use client"
 import { useForm } from "react-hook-form"
+import { useSession } from "next-auth/react";
 
 type Props = {
   record: {
@@ -21,6 +22,8 @@ type FormData = {
 export default function StudentAppealForm({ record, onClose, onSuccess }: Props) {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
 
+  const { data: session } = useSession();
+
   const onSubmit = async (data: FormData) => {
     try {
       const appealBody = {
@@ -28,8 +31,9 @@ export default function StudentAppealForm({ record, onClose, onSuccess }: Props)
         lecture_time: record.start_time,
         lecture_type: record.type,
         lecturer: record.lecturer_id,
-        student_record_id: record._id,
+        record_id: record._id,
         appeal_reason: data.appeal_reason,
+        student_id: session?.user?.id || ""
       }
       const res = await fetch("/api/students/appeals", {
         method: "POST",
