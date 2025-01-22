@@ -3,7 +3,15 @@ import React, { useEffect, useState } from "react";
 import DonutChart from "@/components/DonutChart";
 import BarChart from "@/components/BarChart";
 import StatusComponent from "@/components/StatusComponent";
+import Table from "@/components/Table";
+import TableSearch from "@/components/TableSearch";
 import { useSession } from "next-auth/react";
+
+type TableRow = {
+  date: string;
+  type: string;
+  status: string;
+};
 
 export default function ReportPage({ params }: { params: { courseId: string } }) {
   const { data: session } = useSession();
@@ -22,6 +30,15 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState("");
+
+  const tableColumns = [
+    { header: "Date", accessor: "date" },
+    { header: "Type", accessor: "type" },
+    { header: "Status", accessor: "status" },
+  ];
+
+  const tableData: TableRow[] = []; // Explicitly typed as an array of TableRow
 
   useEffect(() => {
     if (!userId || !courseId) return;
@@ -36,7 +53,6 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         }
         const data = await response.json();
 
-        // Construct the data structure for DonutChart
         const newData: Record<string, [number, number]> = {
           default: [
             data.attendance.reduce((sum: number, item: { attended: number }) => sum + item.attended, 0),
@@ -58,7 +74,6 @@ export default function ReportPage({ params }: { params: { courseId: string } })
 
         setAttendanceData(newData);
 
-        // Construct data for BarChart
         const barData = [
           {
             name: "Attended",
@@ -81,11 +96,10 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         ];
         setBarChartData(barData);
 
-        // Construct data for StatusComponent
         const status = {
           pending: data.appeals.pending || 0,
           approved: data.appeals.approved || 0,
-          rejected: data.appeals.rejected || 0, // Change 'declined' to 'rejected'
+          rejected: data.appeals.rejected || 0,
         };
         setStatusData(status);
       } catch (err: any) {
@@ -108,50 +122,82 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   }
 
   return (
-    <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Donut Chart */}
-      <div className="border rounded-md p-4 shadow-sm bg-white flex flex-col items-center">
-        <DonutChart
-          title="Attendance Percentage"
-          data={attendanceData}
-          colors={["#31C48D", "#F05252"]}
-        />
+    <div className="ml-6 mt-4 mr-6">
+      {/* Header Section */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold mb-2">Course Report</h1>
+          <p className="text-gray-600 dark:text-gray-400">{courseId}</p>
+        </div>
       </div>
 
-      {/* Bar Chart */}
-      <div className="border rounded-md p-4 shadow-sm bg-white">
-        <BarChart
-          title="Attendance Overview"
-          categories={["Class", "Tutorial", "Lab"]}
-          data={barChartData}
-        />
+      {/* Table Section */}
+      <div className="border rounded-md shadow-sm bg-white p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Course Records</h2>
+          <TableSearch value={searchValue} onChange={setSearchValue} />
+        </div>
+        <div className="flex justify-center">
+          <Table
+            columns={tableColumns}
+            data={tableData}
+            renderRow={(item) => (
+              <tr key={item.date}>
+                <td className="px-4 py-2 text-center">{item.date}</td>
+                <td className="px-4 py-2 text-center">{item.type}</td>
+                <td className="px-4 py-2 text-center">{item.status}</td>
+              </tr>
+            )}
+          />
+        </div>
       </div>
 
-      {/* Appeals Sent */}
-      <div className="border rounded-md shadow-sm bg-white">
-        <StatusComponent
-          title="Appeals Sent"
-          statusCards={[
-            {
-              value: statusData.pending,
-              label: "Pending",
-              backgroundColor: "#FEF3C7", // Light yellow
-              textColor: "#D97706", // Dark yellow
-            },
-            {
-              value: statusData.approved,
-              label: "Approved",
-              backgroundColor: "#D1FAE5", // Light green
-              textColor: "#059669", // Dark green
-            },
-            {
-              value: statusData.rejected, // Change 'declined' to 'rejected'
-              label: "Rejected",
-              backgroundColor: "#FEE2E2", // Light red
-              textColor: "#B91C1C", // Dark red
-            },
-          ]}
-        />
+      {/* Charts and Status Section */}
+      <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Donut Chart */}
+        <div className="border rounded-md p-4 shadow-sm bg-white flex flex-col items-center">
+          <DonutChart
+            title="Attendance Percentage"
+            data={attendanceData}
+            colors={["#31C48D", "#F05252"]}
+          />
+        </div>
+
+        {/* Bar Chart */}
+        <div className="border rounded-md p-4 shadow-sm bg-white">
+          <BarChart
+            title="Attendance Overview"
+            categories={["Class", "Tutorial", "Lab"]}
+            data={barChartData}
+          />
+        </div>
+
+        {/* Appeals Sent */}
+        <div className="border rounded-md shadow-sm bg-white">
+          <StatusComponent
+            title="Appeals Sent"
+            statusCards={[
+              {
+                value: statusData.pending,
+                label: "Pending",
+                backgroundColor: "#FEF3C7",
+                textColor: "#D97706",
+              },
+              {
+                value: statusData.approved,
+                label: "Approved",
+                backgroundColor: "#D1FAE5",
+                textColor: "#059669",
+              },
+              {
+                value: statusData.rejected,
+                label: "Rejected",
+                backgroundColor: "#FEE2E2",
+                textColor: "#B91C1C",
+              },
+            ]}
+          />
+        </div>
       </div>
     </div>
   );
