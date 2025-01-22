@@ -6,19 +6,36 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url)
     const status = url.searchParams.get("status")
+    const lecturerId = url.searchParams.get("lecturerId")
+
     await connectToDB()
     const db = mongoose.connection.useDb("BA-DINGDONG-DB")
     const appealsCollection = db.collection("appeals")
 
     const query: any = {}
     if (status) query.status = status
+    if (lecturerId) query.lecturer = lecturerId
 
     const appeals = await appealsCollection.find(query).toArray()
-    return NextResponse.json(appeals, { status: 200 })
+
+    const mapped = appeals.map((appeal) => {
+      if (appeal.lecture_date) {
+        const d = new Date(appeal.lecture_date)
+        appeal.lecture_date = d.toISOString().slice(0, 10)
+      }
+      if (appeal.appeal_date) {
+        const d = new Date(appeal.appeal_date)
+        appeal.appeal_date = d.toISOString().slice(0, 10)
+      }
+      return appeal
+    })
+
+    return NextResponse.json(mapped, { status: 200 })
   } catch {
     return NextResponse.json({ message: "Failed to fetch appeals" }, { status: 500 })
   }
 }
+
 
 export async function PATCH(request: Request) {
   try {

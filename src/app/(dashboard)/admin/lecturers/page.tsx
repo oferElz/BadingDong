@@ -128,7 +128,24 @@ export default function LecturersList() {
     <tr key={item._id} className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text">
       <td className="p-4">{`${item.first_name} ${item.last_name}`}</td>
       <td>{item.username}</td>
-      <td>{item.courses.length > 0 ? item.courses.join(", ") : "No Courses"}</td>
+      <td className="p-4">
+        <div className="flex flex-wrap gap-1">
+          {item.courses.length > 0 ? (
+            item.courses.map((course, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-500 dark:bg-blue-900 dark:text-blue-200"
+              >
+                {course}
+              </span>
+            ))
+          ) : (
+            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-500 dark:bg-red-900 dark:text-red-200">
+              No Courses
+            </span>
+          )}
+        </div>
+      </td>
       <td>
         {role === "admin" && (
           <div className="flex items-center gap-2">
