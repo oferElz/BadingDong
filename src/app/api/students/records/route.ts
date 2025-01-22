@@ -65,34 +65,37 @@ export const GET = async (request: Request) => {
       };
     });
 
-    // Fetch appeals data from the `appeals` collection
-    const appealsPipeline = [
-      {
-        $match: {
-          student_id: userId,
-          course_id: courseId,
-        },
-      },
-      {
-        $group: {
-          _id: "$status", // Group by status (Pending, Approved, Declined)
-          count: { $sum: 1 },
-        },
-      },
-    ];
+    // Fetch all appeals for the given student
+    const appealsData = await db.collection("appeals").find({ student_id: userId }).toArray();
 
-    const appealsData = await db
-      .collection("appeals")
-      .aggregate(appealsPipeline)
+    // Fetch all attendance records for the given student and course
+    const recordsData = await db
+      .collection("records")
+      .find({ student_id: userId, course_id: courseId })
       .toArray();
 
-      const appeals = ALL_APPEAL_STATUSES.reduce((acc, status) => {
-        const key = status.toLowerCase() as keyof typeof acc; // Explicitly cast to keyof acc
-        const record = appealsData.find((item) => item._id === status);
-        acc[key] = record ? record.count : 0;
-        return acc;
-      }, { pending: 0, approved: 0, rejected: 0 }); 
-      
+    // Create a set of valid lecture dates for the specified course
+    const validLectureDates = new Set(
+      recordsData.map((record) => ({
+        date: record.date.toISOString().split("T")[0], // Extract date in YYYY-MM-DD format
+        type: record.type, // Add lecture type to match appeals
+      }))
+    );
+
+    // Filter appeals that match the valid lecture dates and types
+    const filteredAppeals = appealsData.filter((appeal) =>
+      validLectureDates.has({
+        date: appeal.lecture_date,
+        type: appeal.lecture_type,
+      })
+    );
+
+    // Count appeals by status
+    const appeals = ALL_APPEAL_STATUSES.reduce((acc, status) => {
+      const key = status.toLowerCase() as keyof typeof acc;
+      acc[key] = filteredAppeals.filter((appeal) => appeal.status === status).length;
+      return acc;
+    }, { pending: 0, approved: 0, rejected: 0 });
 
     // Format the response
     const response = {
