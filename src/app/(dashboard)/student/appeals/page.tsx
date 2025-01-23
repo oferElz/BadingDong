@@ -4,7 +4,7 @@ import Table from "@/components/Table"
 import TableSearch from "@/components/TableSearch"
 import Image from "next/image"
 import { useSession } from "next-auth/react"
-import StudentAppealForm from "./StudentAppealForm"
+import StudentAppealForm from "@/components/forms/StudentAppealForm"
 
 type MissedRecord = {
   _id: string

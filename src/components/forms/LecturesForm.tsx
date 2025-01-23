@@ -4,15 +4,31 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const;
+
 const schema = z.object({
   _id: z.string().optional(),
   course_id: z.string().min(1, "Course ID is required"),
   type: z.string().min(1, "Type is required"),
-  day_of_week: z.string().min(1, "Day of week is required"),
+  day_of_week: z.enum(daysOfWeek, {
+    errorMap: () => ({ message: "Please select a day of the week" }),
+  }),
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
-  lecturer_id: z.string().min(1, "Lecturer ID is required"),
-  students_ids: z.string().min(1, "At least one student ID is required"),
+  lecturer_id: z.string()
+    .min(1, "Lecturer ID is required")
+    .regex(/^\d+$/, "Lecturer ID must contain only numbers"),
+  students_ids: z.string()
+    .min(1, "At least one student ID is required")
+    .regex(/^[\d,\s]+$/, "Student IDs must contain only numbers, commas, and spaces"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -53,7 +69,7 @@ export default function LecturesForm({
       _id: item?._id || "",
       course_id: item?.course_id || "",
       type: item?.type || "",
-      day_of_week: item?.day_of_week || "",
+      day_of_week: (item?.day_of_week as typeof daysOfWeek[number]) || "",
       start_time: item?.start_time || "",
       end_time: item?.end_time || "",
       lecturer_id: item?.lecturer_id || "",
@@ -120,17 +136,31 @@ export default function LecturesForm({
           <label htmlFor={key} className="block text-sm font-medium">
             {label}
           </label>
-          <input
-            id={key}
-            {...register(key as keyof FormData)}
-            className={`border p-2 rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text ${
-              errors[key as keyof FormData]
-                ? "border-red-500"
-                : "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            }`}
-            placeholder={`Enter ${label}`}
-            disabled={disabled}
-          />
+          {key === "day_of_week" ? (
+            <select
+              {...register("day_of_week")}
+              className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
+            >
+              <option value="">Select a day</option>
+              {daysOfWeek.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              id={key}
+              {...register(key as keyof FormData)}
+              className={`border p-2 rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text ${
+                errors[key as keyof FormData]
+                  ? "border-red-500"
+                  : "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              }`}
+              placeholder={`Enter ${label}`}
+              disabled={disabled}
+            />
+          )}
           {errors[key as keyof FormData] && (
             <p className="text-red-500 dark:text-red-400 text-sm">
               {errors[key as keyof FormData]?.message}
