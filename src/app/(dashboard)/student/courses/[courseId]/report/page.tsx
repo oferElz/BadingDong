@@ -8,6 +8,7 @@ import TableSearch from "@/components/TableSearch";
 import { useSession } from "next-auth/react";
 
 type TableRow = {
+  _id: string;
   date: string;
   type: string;
   status: string;
@@ -28,6 +29,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   const [statusData, setStatusData] = useState<{ pending: number; approved: number; declined: number }>(
     { pending: 0, approved: 0, declined: 0 }
   );
+  const [tableData, setTableData] = useState<TableRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
@@ -37,8 +39,6 @@ export default function ReportPage({ params }: { params: { courseId: string } })
     { header: "Type", accessor: "type" },
     { header: "Status", accessor: "status" },
   ];
-
-  const tableData: TableRow[] = []; // Explicitly typed as an array of TableRow
 
   useEffect(() => {
     if (!userId || !courseId) return;
@@ -99,9 +99,11 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         const status = {
           pending: data.appeals.pending || 0,
           approved: data.appeals.approved || 0,
-          declined: data.appeals.declined || 0, // Fixed
+          declined: data.appeals.declined || 0,
         };
         setStatusData(status);
+
+        setTableData(data.records || []);
       } catch (err: any) {
         console.error("Error fetching attendance data:", err);
         setError(err.message || "Unknown error");
@@ -121,6 +123,24 @@ export default function ReportPage({ params }: { params: { courseId: string } })
     return <p>Error: {error}</p>;
   }
 
+  const filteredData = tableData.filter(
+    (row) =>
+      row.date.toLowerCase().includes(searchValue.toLowerCase()) ||
+      row.type.toLowerCase().includes(searchValue.toLowerCase()) ||
+      row.status.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const renderRow = (item: TableRow) => (
+    <tr
+      key={item._id}
+      className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-purple-100 dark:hover:bg-dark-purple-200 dark:text-dark-text"
+    >
+      <td className="p-4">{item.date}</td>
+      <td>{item.type}</td>
+      <td>{item.status}</td>
+    </tr>
+  );
+
   return (
     <div className="ml-6 mt-4 mr-6">
       {/* Header Section */}
@@ -132,24 +152,14 @@ export default function ReportPage({ params }: { params: { courseId: string } })
       </div>
 
       {/* Table Section */}
-      <div className="border rounded-md shadow-sm bg-white p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Course Records</h2>
-          <TableSearch value={searchValue} onChange={setSearchValue} />
+      <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 mb-6">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-lg font-semibold dark:text-dark-text">Course Records</h2>
+          <div className="flex items-center gap-4 w-auto">
+            <TableSearch value={searchValue} onChange={setSearchValue} />
+          </div>
         </div>
-        <div className="flex justify-center">
-          <Table
-            columns={tableColumns}
-            data={tableData}
-            renderRow={(item) => (
-              <tr key={item.date}>
-                <td className="px-4 py-2 text-center">{item.date}</td>
-                <td className="px-4 py-2 text-center">{item.type}</td>
-                <td className="px-4 py-2 text-center">{item.status}</td>
-              </tr>
-            )}
-          />
-        </div>
+        <Table columns={tableColumns} renderRow={renderRow} data={filteredData} />
       </div>
 
       {/* Charts and Status Section */}
@@ -190,7 +200,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
                 textColor: "#059669",
               },
               {
-                value: statusData.declined, // Fixed
+                value: statusData.declined,
                 label: "Declined",
                 backgroundColor: "#FEE2E2",
                 textColor: "#B91C1C",

@@ -88,10 +88,21 @@ export const GET = async (request: Request) => {
       return acc;
     }, { pending: 0, approved: 0, declined: 0 });
 
+    // Fetch all records for the given student and course
+    const recordsData = await db
+      .collection("records")
+      .find({ student_id: userId, course_id: courseId })
+      .toArray();
+
     // Format the response
     const response = {
       attendance,
       appeals,
+      records: recordsData.map((record) => ({
+        date: new Date(record.date).toLocaleDateString(),
+        type: record.type,
+        status: record.status,
+      })),
     };
 
     return NextResponse.json(response);
