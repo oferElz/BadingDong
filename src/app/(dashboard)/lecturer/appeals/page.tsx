@@ -78,21 +78,20 @@ export default function LecturerAppealsPage() {
       key={item._id}
       className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text"
     >
-      <td className="p-4">{item.lecture_date}</td>
-      <td>{item.lecture_time}</td>
-      <td>{item.lecture_type}</td>
-      <td>{item.student_id}</td>
-      <td className="p-4 align-top">
+      <td className="px-4 py-2">{item.lecture_date}</td>
+      <td className="px-4 py-2">{item.lecture_time}</td>
+      <td className="px-4 py-2">{item.lecture_type}</td>
+      <td className="px-4 py-2">{item.student_id}</td>
+      <td className="px-4 py-2 align-top">
         <div
           className="bg-transparent:bg-dark-transparent p-2 leading-relaxed rounded-md text-sm text-black dark:text-white 
-                    whitespace-pre-wrap break-words overflow-y-auto max-w-lg"
+            whitespace-pre-wrap break-words overflow-y-auto max-w-lg"
           style={{ maxHeight: "150px" }}
         >
           {item.appeal_reason}
         </div>
       </td>
-
-      <td>
+      <td className="px-4 py-2">
         <div className="flex items-center gap-2">
           <button
             className="bg-green-500 text-white py-1 px-2 rounded"
@@ -112,7 +111,7 @@ export default function LecturerAppealsPage() {
   );
 
   return (
-    <div className="bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
+    <div className="min-w-[350px] bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">
           Pending Appeals

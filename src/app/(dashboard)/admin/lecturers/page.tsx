@@ -125,40 +125,44 @@ export default function LecturersList() {
   ]
 
   const renderRow = (item: Lecturer) => (
-    <tr key={item._id} className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text">
-      <td className="p-4">{`${item.first_name} ${item.last_name}`}</td>
-      <td>{item.username}</td>
-      <td className="p-4">
-        <div className="flex flex-wrap gap-1">
-          {item.courses.length > 0 ? (
-            item.courses.map((course, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-500 dark:bg-blue-900 dark:text-blue-200"
-              >
-                {course}
-              </span>
-            ))
-          ) : (
-            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-500 dark:bg-red-900 dark:text-red-200">
-              No Courses
+  <tr
+    key={item._id}
+    className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text"
+  >
+    <td className="px-4 py-2">{`${item.first_name} ${item.last_name}`}</td>
+    <td className="px-4 py-2">{item.username}</td> {/* Match padding */}
+    <td className="px-4 py-2">
+      <div className="flex flex-wrap gap-1">
+        {item.courses.length > 0 ? (
+          item.courses.map((course, index) => (
+            <span
+              key={index}
+              className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-500 dark:bg-blue-900 dark:text-blue-200"
+            >
+              {course}
             </span>
-          )}
-        </div>
-      </td>
-      <td>
-        {role === "admin" && (
-          <div className="flex items-center gap-2">
-            <FormModal model="lecturers" mode="update" item={item} onUpdate={handleUpdate} />
-            <FormModal model="lecturers" mode="delete" item={item} onDelete={handleDelete} />
-          </div>
+          ))
+        ) : (
+          <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-500 dark:bg-red-900 dark:text-red-200">
+            No Courses
+          </span>
         )}
-      </td>
-    </tr>
-  )
+      </div>
+    </td>
+    <td className="px-4 py-2">
+      {role === "admin" && (
+        <div className="flex items-center gap-2">
+          <FormModal model="lecturers" mode="update" item={item} onUpdate={handleUpdate} />
+          <FormModal model="lecturers" mode="delete" item={item} onDelete={handleDelete} />
+        </div>
+      )}
+    </td>
+  </tr>
+);
+
 
   return (
-    <div className="bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
+    <div className="min-w-[550px] bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">All Lecturers</h1>
         <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">

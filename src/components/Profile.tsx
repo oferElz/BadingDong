@@ -63,7 +63,7 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
   const lastName = user.last_name || user.lastName || "";
 
   return (
-    <div className="w-full max-w-md mx-auto p-4">
+    <div className="min-w-[200px] w-full max-w-md mx-auto p-4">
       <div className="bg-surface rounded-lg shadow dark:bg-grey-background">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 dark:border-dark-container">

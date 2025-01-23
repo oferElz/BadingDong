@@ -96,22 +96,35 @@ export default function ClassListPage() {
   ]
 
   const renderRow = (item: ClassItem) => (
-    <tr key={item._id} className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text">
-      <td className="p-4">{item.name}</td>
-      <td>{item.id}</td>
-      <td>
+    <tr
+      key={item._id}
+      className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text"
+    >
+      <td className="px-4 py-2">{item.name}</td>
+      <td className="px-4 py-2">{item.id}</td>
+      <td className="px-4 py-2">
         {role === "admin" && (
           <div className="flex items-center gap-2">
-            <FormModal model="courses" mode="update" item={item} onUpdate={handleUpdate} />
-            <FormModal model="courses" mode="delete" item={item} onDelete={handleDelete} />
+            <FormModal
+              model="courses"
+              mode="update"
+              item={item}
+              onUpdate={handleUpdate}
+            />
+            <FormModal
+              model="courses"
+              mode="delete"
+              item={item}
+              onDelete={handleDelete}
+            />
           </div>
         )}
       </td>
     </tr>
-  )
+  );
 
   return (
-    <div className="bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
+    <div className="min-w-[400px] bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">All Classes</h1>
         <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">

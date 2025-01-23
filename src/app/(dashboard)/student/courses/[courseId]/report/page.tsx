@@ -135,19 +135,19 @@ export default function ReportPage({ params }: { params: { courseId: string } })
     <tr
       key={item._id}
       className="border-b border-gray-200 dark:border-gray-700 
-      even:bg-slate-50 even:dark:bg-gray-800 
-      text-sm 
-      hover:bg-purple-100 dark:hover:bg-gray-700 
-      text-gray-800 dark:text-gray-200"
+        even:bg-slate-50 even:dark:bg-gray-800 
+        text-sm 
+        hover:bg-purple-100 dark:hover:bg-gray-700 
+        text-gray-800 dark:text-gray-200"
     >
-      <td className="p-4">{item.date}</td>
-      <td>{item.type}</td>
-      <td>{item.status}</td>
+      <td className="px-4 py-2">{item.date}</td>
+      <td className="px-4 py-2">{item.type}</td>
+      <td className="px-4 py-2">{item.status}</td>
     </tr>
   );
 
   return (
-    <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="min-w-[400px] bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <div>
