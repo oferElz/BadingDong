@@ -111,7 +111,7 @@ export default function ClassListPage() {
   )
 
   return (
-    <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">All Classes</h1>
         <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">
