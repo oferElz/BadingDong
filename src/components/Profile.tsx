@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { z } from "zod";
 
 const passwordSchema = z.object({
-  oldPassword: z.string().min(1, "Make sure you entred Current Password"),
+  oldPassword: z.string().min(1, "Make sure you entered Current Password"),
   newPassword: z.string().min(6, "New Password must be at least 6 characters"),
 });
 
@@ -64,15 +64,15 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
 
   return (
     <div className="w-full max-w-md mx-auto p-4">
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-surface rounded-lg shadow dark:bg-grey-background">
         {/* Header */}
-        <div className="px-6 py-4 border-b">
-          <h2 className="text-xl font-semibold text-center text-gray-800">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-dark-container">
+          <h2 className="text-xl font-semibold text-center text-gray-800 dark:text-dark-text">
             Profile Information
           </h2>
         </div>
         {successMessage && (
-          <div className="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg">
+          <div className="fixed top-4 right-4 bg-Sky text-gray-800 px-4 py-3 rounded-lg shadow-lg dark:bg-dark-Sky dark:text-dark-text">
             {successMessage}
           </div>
         )}
@@ -81,7 +81,7 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
         <div className="p-6 space-y-6">
           {/* Full Name */}
           <div className="text-center pb-4">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-dark-text">
               {firstName} {lastName}
             </h3>
           </div>
@@ -89,26 +89,28 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
           {/* User Details */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-500 mb-1 text-center">
+              <label className="block text-sm text-gray-500 mb-1 text-center dark:text-dark-text">
                 Username
               </label>
-              <p className="text-gray-900 font-medium text-center">
+              <p className="text-gray-900 font-medium text-center dark:text-dark-text">
                 {user.username}
               </p>
             </div>
 
             <div>
-              <label className="block text-sm text-gray-500 mb-1 text-center">
+              <label className="block text-sm text-gray-500 mb-1 text-center dark:text-dark-text">
                 ID
               </label>
-              <p className="text-gray-900 font-medium text-center">{user.id}</p>
+              <p className="text-gray-900 font-medium text-center dark:text-dark-text">
+                {user.id}
+              </p>
             </div>
           </div>
 
           {/* Change Password Button */}
           <button
             onClick={() => setShowModal(true)}
-            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 dark:bg-dark-Sky dark:hover:bg-dark-YellowLight"
           >
             Change Password
           </button>
@@ -118,14 +120,14 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
       {/* Password Change Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
+          <div className="bg-surface rounded-lg max-w-md w-full p-6 shadow-lg dark:bg-dark-surface">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-dark-text">
                 Change Password
               </h3>
               <button
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-500 text-xl"
+                className="text-gray-400 hover:text-gray-500 text-xl dark:text-dark-text"
               >
                 ×
               </button>
@@ -133,33 +135,33 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-dark-text">
                   Current Password
                 </label>
                 <input
                   type="password"
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-dark-container dark:border-dark-container dark:text-dark-text"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-dark-text">
                   New Password
                 </label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-dark-container dark:border-dark-container dark:text-dark-text"
                   required
                 />
               </div>
 
               {error && (
-                <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg">
+                <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg dark:bg-dark-container dark:text-dark-text">
                   {error}
                 </div>
               )}
@@ -167,14 +169,14 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
               <div className="flex gap-3 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+                  className="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 dark:bg-dark-Sky dark:hover:bg-dark-YellowLight"
                 >
                   Save Changes
                 </button>
                 <button
                   type="button"
                   onClick={handleCloseModal}
-                  className="flex-1 py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors duration-200"
+                  className="flex-1 py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors duration-200 dark:bg-dark-container dark:text-dark-text dark:hover:bg-dark-background"
                 >
                   Cancel
                 </button>

@@ -117,11 +117,11 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   }, [userId, courseId]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p className="p-6 text-gray-700 dark:text-gray-300">Loading...</p>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p className="p-6 text-red-500 dark:text-red-400">Error: {error}</p>;
   }
 
   const filteredData = tableData.filter(
@@ -134,7 +134,11 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   const renderRow = (item: TableRow) => (
     <tr
       key={item._id}
-      className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-purple-100 dark:hover:bg-dark-purple-200 dark:text-dark-text"
+      className="border-b border-gray-200 dark:border-gray-700 
+      even:bg-slate-50 even:dark:bg-gray-800 
+      text-sm 
+      hover:bg-purple-100 dark:hover:bg-gray-700 
+      text-gray-800 dark:text-gray-200"
     >
       <td className="p-4">{item.date}</td>
       <td>{item.type}</td>
@@ -143,19 +147,19 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   );
 
   return (
-    <div className="ml-6 mt-4 mr-6">
+    <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
       {/* Header Section */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-xl font-bold mb-2">Course Report</h1>
+          <h1 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">Course Report</h1>
           <p className="text-gray-600 dark:text-gray-400 text-sm">{courseId}</p>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="bg-white dark:bg-dark-container p-3 rounded-md flex-1 mb-6">
+      <div className="bg-white dark:bg-dark-container p-3 rounded-md flex-1 mb-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-md font-semibold dark:text-dark-text">Course Records</h2>
+          <h2 className="text-md font-semibold text-gray-800 dark:text-white">Course Records</h2>
           <div className="flex items-center gap-2 w-auto">
             <TableSearch value={searchValue} onChange={setSearchValue} />
           </div>
@@ -167,7 +171,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
 
       {/* Charts and Status Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="border rounded-md p-1 shadow-sm bg-white flex flex-col items-center">
+        <div className="border rounded-md p-1 shadow-sm bg-white dark:bg-dark-container flex flex-col items-center">
           <DonutChart
             title="Attendance Percentage"
             data={attendanceData}
@@ -184,7 +188,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
           />
         </div>
 
-        <div className="border rounded-md p-1 shadow-sm bg-white">
+        <div className="border rounded-md p-1 shadow-sm bg-white dark:bg-dark-container">
           <BarChart
             title="Attendance Overview"
             categories={["Class", "Tutorial", "Lab"]}
@@ -192,7 +196,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
           />
         </div>
 
-        <div className="border rounded-md shadow-sm bg-white p-1">
+        <div className="border rounded-md shadow-sm bg-white dark:bg-dark-container p-1">
           <StatusComponent
             title="Appeals Sent"
             statusCards={[
