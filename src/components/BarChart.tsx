@@ -3,87 +3,84 @@ import React, { useEffect, useRef } from "react";
 import ApexCharts from "apexcharts";
 
 interface BarChartProps {
-  title: string; // Title for the chart
-  categories: string[]; // Categories for the y-axis
-  data: { name: string; color: string; data: number[] }[]; // Series data
+  title: string;
+  categories: string[];
+  data: { name: string; color: string; data: number[] }[];
 }
 
 const BarChart: React.FC<BarChartProps> = ({ title, categories, data }) => {
-  const chartRef = useRef<HTMLDivElement>(null); // Reference to the chart container
-  const chartInstance = useRef<ApexCharts | null>(null); // Reference to the chart instance
+  const chartRef = useRef<HTMLDivElement>(null);
+  const chartInstance = useRef<ApexCharts | null>(null);
 
   useEffect(() => {
-    // Chart configuration
     const options = {
       series: data,
       chart: {
         type: "bar",
         height: 400,
-        toolbar: {
-          show: false,
-        },
-        animations: {
-          enabled: true,
-        },
+        toolbar: { show: false },
+        animations: { enabled: true },
+        background: 'transparent'
       },
       plotOptions: {
         bar: {
           horizontal: true,
-          columnWidth: "70%", // Adjust bar width
-          borderRadius: 6, // Rounded corners
+          columnWidth: "70%",
+          borderRadius: 6,
         },
       },
       legend: {
         show: true,
         position: "bottom",
+        labels: {
+          colors: ['#6B7280', '#6B7280'], // Light and dark colors
+          useSeriesColors: false
+        }
       },
-      dataLabels: {
-        enabled: false,
-      },
+      dataLabels: { enabled: false },
       tooltip: {
+        theme: 'dark',
         shared: true,
         intersect: false,
-        y: {
-          formatter: (value: number) => `${value}`,
-        },
+        y: { formatter: (value: number) => `${value}` },
       },
       xaxis: {
         categories,
         labels: {
           style: {
             fontFamily: "Inter, sans-serif",
-            cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400",
+            colors: ['#6B7280'], // Gray color for light mode
+            cssClass: "dark:text-gray-400"
           },
         },
+        axisBorder: { show: false },
+        axisTicks: { show: false }
       },
       yaxis: {
         labels: {
           style: {
             fontFamily: "Inter, sans-serif",
-            cssClass: "text-xs font-normal fill-gray-500 dark:fill-gray-400",
+            colors: ['#6B7280'], // Gray color for light mode
+            cssClass: "dark:text-gray-400"
           },
         },
       },
       grid: {
         show: true,
+        borderColor: '#E5E7EB', // Light border color
         strokeDashArray: 4,
-        padding: {
-          left: 10,
-          right: 10,
-        },
+        padding: { left: 10, right: 10 },
+        xaxis: { lines: { show: false } },
+        yaxis: { lines: { show: true } }
       },
-      fill: {
-        opacity: 1,
-      },
+      fill: { opacity: 1 },
     };
 
-    // Create chart instance
     if (chartRef.current) {
       chartInstance.current = new ApexCharts(chartRef.current, options);
       chartInstance.current.render();
     }
 
-    // Cleanup on unmount
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
@@ -92,7 +89,6 @@ const BarChart: React.FC<BarChartProps> = ({ title, categories, data }) => {
     };
   }, [categories, data]);
 
-  // Update chart on props change
   useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.updateOptions({
@@ -103,10 +99,8 @@ const BarChart: React.FC<BarChartProps> = ({ title, categories, data }) => {
   }, [categories, data]);
 
   return (
-    <div>
-      {/* Chart Title */}
-      <h2 className="text-lg font-semibold text-center mb-4">{title}</h2>
-      {/* Chart Container */}
+    <div className="p-2">
+      <h2 className="text-lg font-semibold text-center mb-4 text-gray-800 dark:text-white">{title}</h2>
       <div ref={chartRef}></div>
     </div>
   );

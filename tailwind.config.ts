@@ -26,15 +26,23 @@ const config: Config = {
         "dark-surface": "#1E1E1E",
         "dark-container": "#212121",
         "dark-Sky": "#2C5363",
-        "dark-SkyLight": "#335561",
+        "dark-SkyLight": "#426875",
         "dark-Purple": "#383866",
-        "dark-PurpleLight": "#2A2A4D",
+        "dark-PurpleLight": "#545470",
         "dark-Yellow": "#665C33",
         "dark-YellowLight": "#4D4426",
         "dark-text": "#E1E1E1",
         "dark-primary": "#90CAF9",
         "dark-secondary": "#B39DDB",
       },
+      variables: {
+        ':root': {
+          '--donut-text-color': '#5e4d9e',
+        },
+        '.dark': {
+          '--donut-text-color': '#E1E1E1',
+        },
+      }
     },
   },
   plugins: [],

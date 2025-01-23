@@ -16,7 +16,6 @@ export default function CoursesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch courses from the API
   useEffect(() => {
     if (!userId) return;
 
@@ -40,16 +39,16 @@ export default function CoursesPage() {
   }, [userId]);
 
   if (loading) {
-    return <p>Loading courses...</p>;
+    return <p className="p-6 dark:text-dark-text">Loading courses...</p>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p className="p-6 text-red-500 dark:text-red-400">Error: {error}</p>;
   }
 
   return (
-    <main className="p-6">
-      <h1 className="text-lg font-semibold mb-4">All Courses</h1>
+    <main className="p-6 bg-gray-50 dark:bg-dark-background min-h-screen">
+      <h1 className="text-lg font-semibold mb-4 dark:text-dark-text">All Courses</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => (

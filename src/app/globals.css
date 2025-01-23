@@ -129,3 +129,11 @@
 .dark ::-webkit-scrollbar-thumb {
   background-color: #555;     /* Dark thumb color */
 }
+
+:root {
+  --donut-text-color: #444444; /* Light mode default */
+}
+
+.dark {
+  --donut-text-color: #E1E1E1; /* Dark mode default */
+}

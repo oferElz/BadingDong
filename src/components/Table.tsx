@@ -12,7 +12,7 @@ const Table = ({
     <div className="w-full overflow-x-auto">
       {/* 2) Use `table-fixed` so expanding rows don’t shift other columns */}
       {/* 3) Give a minimum width so columns won’t collide on very small screens */}
-      <table className="table-fixed border-collapse w-full min-w-[600px] mt-4">
+      <table className="table-fixed border-collapse w-full min-w-[480px] mt-4">
         <thead>
           <tr className="text-left text-gray-500 text-sm">
             {columns.map((col) => (

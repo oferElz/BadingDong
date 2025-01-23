@@ -4,12 +4,12 @@ import ApexCharts from "apexcharts";
 
 interface DonutChartProps {
   title: string;
-  data: Record<string, [number, number]>; // Key-value pairs for different datasets
-  colors?: string[]; // Colors for the donut chart
-  labels?: string[]; // Labels for the series
+  data: Record<string, [number, number]>;
+  colors?: string[];
+  labels?: string[];
   centerContent?: {
-    label: string; // Center label text
-    formatter: (series: number[], seriesTotals: number[]) => string; // Function to format the center content
+    label: string;
+    formatter: (series: number[], seriesTotals: number[]) => string;
   };
 }
 
@@ -35,6 +35,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         height: 320,
         width: "100%",
         type: "donut",
+        background: 'transparent'
       },
       plotOptions: {
         pie: {
@@ -43,16 +44,19 @@ const DonutChart: React.FC<DonutChartProps> = ({
             labels: {
               show: true,
               total: {
-                show: true, // Enable center content
+                show: true,
                 showAlways: true,
-                label: centerContent.label, // Set the label
+                label: centerContent.label,
                 fontSize: "16px",
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 400,
-                color: "#000",
+                color: 'var(--donut-text-color)', // Light mode text color (gray-700)
                 formatter: (w) =>
-                  centerContent.formatter(w.globals.series, w.globals.seriesTotals), // Call the formatter
+                  centerContent.formatter(w.globals.series, w.globals.seriesTotals),
               },
+              value: {
+                color: 'var(--donut-text-color)'
+              }
             },
           },
         },
@@ -61,6 +65,10 @@ const DonutChart: React.FC<DonutChartProps> = ({
       legend: {
         position: "bottom",
         fontFamily: "Inter, sans-serif",
+        labels: {
+          colors: ['#6B7280', '#6B7280'], // Light and dark colors
+          useSeriesColors: false
+        }
       },
       tooltip: {
         enabled: true,
@@ -73,8 +81,10 @@ const DonutChart: React.FC<DonutChartProps> = ({
           },
         },
       },
-      dataLabels: {
-        enabled: false,
+      dataLabels: { enabled: false },
+      theme: {
+        mode: 'light',
+        palette: 'palette1'
       },
     };
 
@@ -92,7 +102,6 @@ const DonutChart: React.FC<DonutChartProps> = ({
         .filter((cb) => cb.checked)
         .map((cb) => cb.value);
 
-      // If nothing is checked or all boxes are checked, show default data
       const allChecked = selectedKeys.length === Object.keys(data).filter((key) => key !== "default").length;
       if (selectedKeys.length === 0 || allChecked) {
         setCurrentSeries(data.default);
@@ -100,7 +109,6 @@ const DonutChart: React.FC<DonutChartProps> = ({
         return;
       }
 
-      // Calculate aggregated data for selected categories
       const aggregated: [number, number] = selectedKeys.reduce(
         (acc: [number, number], key: string) => {
           acc[0] += data[key][0];
@@ -129,7 +137,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-lg font-semibold mb-4">{title}</h2>
+      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">{title}</h2>
       <div id="donut-chart" style={{ width: "100%", maxWidth: 420 }} />
       <div id="chart-checkboxes" className="flex gap-4 mt-4">
         {Object.keys(data).map(
@@ -139,9 +147,9 @@ const DonutChart: React.FC<DonutChartProps> = ({
                 <input
                   type="checkbox"
                   value={key}
-                  className="w-4 h-4 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-4 h-4 rounded focus:ring-2 focus:ring-blue-500 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
                 />
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </span>
               </label>
