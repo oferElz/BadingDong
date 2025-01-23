@@ -50,10 +50,13 @@ const DonutChart: React.FC<DonutChartProps> = ({
                 fontSize: "16px",
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 400,
-                color: "rgb(55, 65, 81)", // Light mode text color (gray-700)
+                color: 'var(--donut-text-color)', // Light mode text color (gray-700)
                 formatter: (w) =>
                   centerContent.formatter(w.globals.series, w.globals.seriesTotals),
               },
+              value: {
+                color: 'var(--donut-text-color)'
+              }
             },
           },
         },
@@ -126,6 +129,9 @@ const DonutChart: React.FC<DonutChartProps> = ({
 
     return () => {
       chart.destroy();
+      checkboxes.forEach((cb) =>
+        cb.removeEventListener("change", handleCheckboxChange)
+      );
     };
   }, [currentSeries, colors, labels, centerContent, data]);
 

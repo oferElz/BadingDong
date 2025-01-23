@@ -35,6 +35,14 @@ const config: Config = {
         "dark-primary": "#90CAF9",
         "dark-secondary": "#B39DDB",
       },
+      variables: {
+        ':root': {
+          '--donut-text-color': '#5e4d9e',
+        },
+        '.dark': {
+          '--donut-text-color': '#E1E1E1',
+        },
+      }
     },
   },
   plugins: [],
