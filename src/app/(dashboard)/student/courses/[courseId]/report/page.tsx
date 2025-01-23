@@ -147,7 +147,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   );
 
   return (
-    <div className="min-w-[400px] bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="min-w-[300px] bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <div>

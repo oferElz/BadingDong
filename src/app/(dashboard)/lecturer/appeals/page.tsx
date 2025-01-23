@@ -25,7 +25,6 @@ export default function LecturerAppealsPage() {
 
   const fetchAppeals = async () => {
     try {
-      // Now we get them from /api/lecturers/appeals?status=pending
       const response = await fetch(
         `/api/lecturers/appeals?status=Pending&lecturerId=${session?.user?.id}`
       );
