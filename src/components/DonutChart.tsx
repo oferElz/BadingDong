@@ -19,10 +19,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   labels = ["Category 1", "Category 2"],
   centerContent = {
     label: "",
-    formatter: (series, seriesTotals) => {
-      const total = seriesTotals.reduce((a, b) => a + b, 0);
-      return total > 0 ? `${((series[0] / total) * 100).toFixed(1)}%` : "0%";
-    },
+    formatter: (series, seriesTotals) => "No data",
   },
 }) => {
   const [currentSeries, setCurrentSeries] = useState<[number, number]>(
@@ -44,18 +41,16 @@ const DonutChart: React.FC<DonutChartProps> = ({
             size: "80%",
             labels: {
               show: true,
-              name: { show: false },
-              value: { show: false },
               total: {
-                show: true,
+                show: true, // Enable center content
                 showAlways: true,
-                label: centerContent.label,
+                label: centerContent.label, // Set the label
                 fontSize: "16px",
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 400,
                 color: "#000",
-                formatter: (w: any) =>
-                  centerContent.formatter(w.globals.series, w.globals.seriesTotals),
+                formatter: (w) =>
+                  centerContent.formatter(w.globals.series, w.globals.seriesTotals), // Call the formatter
               },
             },
           },
@@ -129,7 +124,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         cb.removeEventListener("change", handleCheckboxChange)
       );
     };
-  }, [data, colors, centerContent, currentSeries]);
+  }, [currentSeries, colors, labels, centerContent, data]);
 
   return (
     <div className="flex flex-col items-center">
