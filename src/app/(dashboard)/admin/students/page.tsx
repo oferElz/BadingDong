@@ -125,7 +125,7 @@ export default function StudentListPage() {
     <tr key={item._id} className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text">
       <td className="p-4">{`${item.first_name} ${item.last_name}`}</td>
       <td>{item.username}</td>
-      <td className="hidden md:table-cell">{item.id}</td>
+      <td>{item.id}</td>
       <td>
         {role === "admin" && (
           <div className="flex items-center gap-2">
