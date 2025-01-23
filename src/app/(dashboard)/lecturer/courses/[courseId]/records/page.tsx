@@ -160,7 +160,7 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="bg-white dark:bg-dark-container text-black dark:text-dark-text p-6 rounded-md m-4">
+    <div className="min-w-[650px] bg-white dark:bg-dark-container text-black dark:text-dark-text p-6 rounded-md m-4">
       {/* Header Section */}
       <div className="mb-6 flex items-center justify-between">
         <div>

@@ -1,6 +1,6 @@
 const AdminPage = () => {
   return (
-    <div className="p-4 h-full overflow-hidden">
+    <div className="min-w-[250px] p-4 h-full overflow-hidden">
       <div className="w-full h-full flex flex-col">
         <div className="w-full h-full rounded-lg p-8 bg-surface dark:bg-dark-container shadow-lg transition-colors duration-200 overflow-y-auto">
           <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-dark-text">

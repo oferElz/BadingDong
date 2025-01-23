@@ -154,23 +154,23 @@ export default function LecturesPage() {
     const isExpanded = expandedLecture === item._id;
     const arrowSrc = isExpanded ? "/arrow-right.svg" : "/arrow-down.svg";
     const buttonText = isExpanded ? "Hide" : "Show";
-
+  
     return (
       <tr
         key={item._id}
         className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text"
       >
-        <td className="p-4">{item.course_id}</td>
-        <td>{item.type}</td>
-        <td>{item.day_of_week}</td>
-        <td>{item.start_time}</td>
-        <td>{item.end_time}</td>
-        <td>
+        <td className="px-4 py-2">{item.course_id}</td>
+        <td className="px-4 py-2">{item.type}</td>
+        <td className="px-4 py-2">{item.day_of_week}</td>
+        <td className="px-4 py-2">{item.start_time}</td>
+        <td className="px-4 py-2">{item.end_time}</td>
+        <td className="px-4 py-2">
           {item.lecturer_details
             ? `${item.lecturer_details.name} (${item.lecturer_details.id})`
             : item.lecturer_id}
         </td>
-        <td>
+        <td className="px-4 py-2">
           {/* Show/Hide Button */}
           <button
             onClick={() => toggleExpand(item._id)}
@@ -179,7 +179,7 @@ export default function LecturesPage() {
             <Image src={arrowSrc} alt="Expand" width={14} height={14} className="dark:invert" />
             <span>{buttonText}</span>
           </button>
-
+  
           {/* Expanded Student Details */}
           {isExpanded && (
             <div className="mt-2 p-2 rounded-md w-full overflow-x-hidden">
@@ -197,7 +197,7 @@ export default function LecturesPage() {
             </div>
           )}
         </td>
-        <td>
+        <td className="px-4 py-2">
           <div className="flex items-center gap-2">
             {/* Update Lecture Modal */}
             <FormModal
@@ -220,7 +220,7 @@ export default function LecturesPage() {
   };
 
   return (
-    <div className="bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
+    <div className="min-w-[430px] bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">Lectures</h1>

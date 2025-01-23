@@ -56,20 +56,23 @@ export default function StudentAppealsPage() {
   ]
 
   const renderRow = (item: MissedRecord) => (
-    <tr key={item._id} className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text">
-      <td className="p-4">{item.date?.slice(0,10)}</td>
-      <td>{item.course_id}</td>
-      <td>{item.type}</td>
-      <td>{item.start_time}</td>
-      <td>{item.day_of_week}</td>
-      <td>
+    <tr
+      key={item._id}
+      className="border-b border-gray-200 dark:border-gray-700 even:bg-slate-50 even:dark:bg-grey-background text-sm hover:bg-PurpleLight dark:hover:bg-dark-PurpleLight dark:text-dark-text"
+    >
+      <td className="px-4 py-2">{item.date?.slice(0, 10)}</td>
+      <td className="px-4 py-2">{item.course_id}</td>
+      <td className="px-4 py-2">{item.type}</td>
+      <td className="px-4 py-2">{item.start_time}</td>
+      <td className="px-4 py-2">{item.day_of_week}</td>
+      <td className="px-4 py-2">
         {item.isAppealed ? (
           <span className="text-gray-400 dark:text-dark-text text-xs">Already Appealed</span>
         ) : (
           <button
             onClick={() => {
-              setSelectedRecord(item)
-              setShowForm(true)
+              setSelectedRecord(item);
+              setShowForm(true);
             }}
             className="bg-blue-500 dark:bg-dark-Sky text-white py-1 px-2 rounded hover:bg-blue-600 dark:hover:bg-dark-SkyLight text-xs"
           >
@@ -78,10 +81,10 @@ export default function StudentAppealsPage() {
         )}
       </td>
     </tr>
-  )
+  );
 
   return (
-    <div className="bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
+    <div className="min-w-[620px] bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">Appealable Records</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">

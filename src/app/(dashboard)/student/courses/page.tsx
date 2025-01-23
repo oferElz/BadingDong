@@ -47,10 +47,10 @@ export default function CoursesPage() {
   }
 
   return (
-    <main className="p-6 bg-gray-50 dark:bg-dark-background min-h-screen">
+    <main className="bg-white dark:bg-dark-container text-black dark:text-dark-text p-6 rounded-md m-4">
       <h1 className="text-lg font-semibold mb-4 dark:text-dark-text">All Courses</h1>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {courses.map((course) => (
           <Card
             key={course.id}

@@ -21,7 +21,7 @@ export default function DashboardLayout({
         <Menu />
       </div>
       {/* RIGHT */}
-      <div className="min-w-[440px] w-[92%] md:w-[92%] lg:w-[92%] xl:w-[90%] bg-background dark:bg-dark-surface overflow-y-auto overflow-x-auto flex flex-col">
+      <div className="flex-1 flex flex-col bg-background dark:bg-dark-surface overflow-y-auto overflow-x-auto">
         {children}
       </div>
     </div>
