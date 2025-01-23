@@ -76,12 +76,16 @@ export default function LecturesPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create lecture");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create lecture");
       }
 
       await fetchLectures();
+      return true; // Return true for successful creation
     } catch (error) {
       console.error("Error creating lecture:", error);
+      alert(error instanceof Error ? error.message : "Failed to create lecture");
+      return false; // Return false to prevent modal from closing
     }
   };
 
