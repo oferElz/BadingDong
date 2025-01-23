@@ -126,7 +126,7 @@ export default function ClassListPage() {
   return (
     <div className="min-w-[400px] bg-white dark:bg-dark-container p-4 rounded-md m-4 mt-0">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold dark:text-dark-text">All Classes</h1>
+        <h1 className="text-lg font-semibold dark:text-dark-text">All Courses</h1>
         <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
           {role === "admin" && <FormModal model="courses" mode="create" onCreate={handleCreate} />}
