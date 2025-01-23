@@ -72,7 +72,7 @@ export default function LecturesForm({
     defaultValues: {
       _id: item?._id || "",
       course_id: item?.course_id || "",
-      type: item?.type || "",
+      type: (item?.type as typeof lectureTypes[number]) || "",
       day_of_week: (item?.day_of_week as typeof daysOfWeek[number]) || "",
       start_time: item?.start_time || "",
       end_time: item?.end_time || "",

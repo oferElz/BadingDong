@@ -32,6 +32,7 @@ const columns = [
   { header: "End Time", accessor: "end_time" },
   { header: "Lecturer", accessor: "lecturer_id" },
   { header: "Students", accessor: "students_ids" },
+  { header: "Actions", accessor: "action"},
 ];
 
 export default function LecturesPage() {
@@ -39,7 +40,6 @@ export default function LecturesPage() {
   const [expandedLecture, setExpandedLecture] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch lectures from API and transform _id
   const fetchLectures = async () => {
     try {
       const response = await fetch("/api/lectures");
@@ -48,7 +48,6 @@ export default function LecturesPage() {
       }
       const data: any[] = await response.json();
 
-      // Transform _id from { $oid: string } to string
       const transformedData: LectureDoc[] = data.map((lecture) => ({
         ...lecture,
         _id: typeof lecture._id === "string" ? lecture._id : lecture._id.$oid,
