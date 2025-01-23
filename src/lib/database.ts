@@ -13,9 +13,11 @@ export async function connectToDB() {
   }
 
   try {
-    // Replace <username>, <password>, and <dbName> with actual values
-    // e.g., "mongodb+srv://admin:password@cluster0.mongodb.net/dbName"
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 30000, // 30 seconds to connect to the database server
+      socketTimeoutMS: 45000, // 45 seconds for socket operations
+      connectTimeoutMS: 30000, // 30 seconds for the connection timeout
+    });
     isConnected = true;
     console.log("Connected to database:", mongoose.connection.name);
     console.log("MongoDB connected");
