@@ -4,9 +4,16 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
-  id: z.string().min(1, "Student ID is required").optional(),
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
+  id: z.string()
+    .min(1, "Student ID is required")
+    .regex(/^\d+$/, "Student ID must contain only numbers")
+    .optional(),
+  first_name: z.string()
+    .min(1, "First name is required")
+    .regex(/^[A-Za-z\s-]+$/, "First name must contain only letters, spaces, or hyphens"),
+  last_name: z.string()
+    .min(1, "Last name is required")
+    .regex(/^[A-Za-z\s-]+$/, "Last name must contain only letters, spaces, or hyphens"),
   username: z.string().min(1, "Username is required"),
   password: z
     .string()
