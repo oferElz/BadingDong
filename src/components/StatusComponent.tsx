@@ -16,9 +16,7 @@ interface StatusComponentProps {
 const StatusComponent: React.FC<StatusComponentProps> = ({ title, statusCards }) => {
   return (
     <div className="p-4 h-full flex flex-col">
-      {/* Header */}
-      <h3 className="text-lg font-semibold mb-6 text-center">{title}</h3>
-      {/* Status Bars */}
+      <h3 className="text-lg font-semibold mb-6 text-center text-gray-800 dark:text-white">{title}</h3>
       <div className="flex flex-col gap-4 items-center flex-grow justify-center">
         {statusCards.map((card, index) => (
           <div
