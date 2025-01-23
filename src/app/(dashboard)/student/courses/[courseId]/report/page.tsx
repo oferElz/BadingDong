@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import DonutChart from "@/components/DonutChart";
-import BarChart from "@/components/BarChart";
+import dynamic from "next/dynamic";
 import StatusComponent from "@/components/StatusComponent";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { useSession } from "next-auth/react";
+
+// Dynamically import DonutChart and BarChart with SSR disabled
+const DonutChart = dynamic(() => import("@/components/DonutChart"), { ssr: false });
+const BarChart = dynamic(() => import("@/components/BarChart"), { ssr: false });
 
 type TableRow = {
   _id: string;
@@ -148,15 +151,12 @@ export default function ReportPage({ params }: { params: { courseId: string } })
 
   return (
     <div className="min-w-[300px] bg-white dark:bg-dark-container p-4 rounded-md flex-1 m-4 mt-0">
-      {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">Course Report</h1>
           <p className="text-gray-600 dark:text-gray-400 text-sm">{courseId}</p>
         </div>
       </div>
-
-      {/* Table Section */}
       <div className="bg-white dark:bg-dark-container p-3 rounded-md flex-1 mb-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-md font-semibold text-gray-800 dark:text-white">Course Records</h2>
@@ -168,8 +168,6 @@ export default function ReportPage({ params }: { params: { courseId: string } })
           <Table columns={tableColumns} renderRow={renderRow} data={filteredData} />
         </div>
       </div>
-
-      {/* Charts and Status Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="border rounded-md p-1 shadow-sm bg-white dark:bg-dark-container flex flex-col items-center">
           <DonutChart
@@ -187,7 +185,6 @@ export default function ReportPage({ params }: { params: { courseId: string } })
             }}
           />
         </div>
-
         <div className="border rounded-md p-1 shadow-sm bg-white dark:bg-dark-container">
           <BarChart
             title="Attendance Overview"
@@ -195,7 +192,6 @@ export default function ReportPage({ params }: { params: { courseId: string } })
             data={barChartData}
           />
         </div>
-
         <div className="border rounded-md shadow-sm bg-white dark:bg-dark-container p-1">
           <StatusComponent
             title="Appeals Sent"
