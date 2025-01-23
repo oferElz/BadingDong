@@ -4,6 +4,7 @@ import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
 const handler = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
