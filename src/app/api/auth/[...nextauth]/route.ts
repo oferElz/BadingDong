@@ -5,9 +5,6 @@ import mongoose from "mongoose";
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -16,11 +13,10 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
-          return null;
-        }
-
         try {
+          if (!credentials?.username || !credentials?.password) {
+            return null;
+          }
           await connectToDB();
           const db = mongoose.connection.useDb("BA-DINGDONG-DB");
           const usersCollection = db.collection("users");
