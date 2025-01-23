@@ -101,7 +101,7 @@ export const GET = async (request: Request) => {
       attendance,
       appeals,
       records: recordsData.map((record) => ({
-        date: new Date(record.date).toLocaleDateString("en-US"),
+        date: new Date(record.date).toLocaleDateString("en-GB"),
         type: record.type,
         status: record.status,
       })),

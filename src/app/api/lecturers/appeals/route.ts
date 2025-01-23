@@ -21,11 +21,11 @@ export async function GET(request: Request) {
     const mapped = appeals.map((appeal) => {
       if (appeal.lecture_date) {
         const d = new Date(appeal.lecture_date)
-        appeal.lecture_date = d.toISOString().slice(0, 10)
+        appeal.lecture_date = d.toLocaleDateString("en-GB")
       }
       if (appeal.appeal_date) {
         const d = new Date(appeal.appeal_date)
-        appeal.appeal_date = d.toISOString().slice(0, 10)
+        appeal.appeal_date = d.toLocaleDateString("en-GB")
       }
       return appeal
     })
