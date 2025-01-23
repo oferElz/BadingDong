@@ -3,21 +3,27 @@ import ApexCharts from "apexcharts";
 
 interface DonutChartProps {
   title: string;
-  data: Record<string, [number, number]>;
-  colors?: string[];
-}
-
-interface ApexChartType {
-  globals: {
-    series: number[];
-    seriesTotals: number[];
-  }
+  data: Record<string, [number, number]>; // Key-value pairs for different datasets
+  colors?: string[]; // Colors for the donut chart
+  labels?: string[]; // Labels for the series
+  centerContent?: {
+    label: string; // Center label text
+    formatter: (series: number[], seriesTotals: number[]) => string; // Function to format the center content
+  };
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({
   title,
   data,
   colors = ["#31C48D", "#F05252"],
+  labels = ["Category 1", "Category 2"],
+  centerContent = {
+    label: "",
+    formatter: (series, seriesTotals) => {
+      const total = seriesTotals.reduce((a, b) => a + b, 0);
+      return total > 0 ? `${((series[0] / total) * 100).toFixed(1)}%` : "0%";
+    },
+  },
 }) => {
   const [currentSeries, setCurrentSeries] = useState<[number, number]>(
     data.default || [0, 0]
@@ -25,7 +31,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
 
   useEffect(() => {
     const options: ApexCharts.ApexOptions = {
-      series: data.default,
+      series: currentSeries,
       colors: colors,
       chart: {
         height: 320,
@@ -43,33 +49,19 @@ const DonutChart: React.FC<DonutChartProps> = ({
               total: {
                 show: true,
                 showAlways: true,
-                label: " ",
+                label: centerContent.label,
                 fontSize: "16px",
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 400,
                 color: "#000",
-                formatter: function(w: ApexChartType) {
-                  const attended = w.globals.series[0] || 0;
-                  const total = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
-                  const percentage = total > 0 ? (attended / total * 100).toFixed(1) : "0";
-                  
-                  return `
-                    <div style="text-align:center;line-height:1.4;">
-                      <div style="font-size:18px;font-weight:600;color:#000;">
-                        Attendance
-                      </div>
-                      <div style="font-size:24px;color:#6B7280;margin-top:4px;">
-                        ${percentage}%
-                      </div>
-                    </div>
-                  `;
-                }
-              }
-            }
-          }
-        }
+                formatter: (w: any) =>
+                  centerContent.formatter(w.globals.series, w.globals.seriesTotals),
+              },
+            },
+          },
+        },
       },
-      labels: ["Attended", "Missed"],
+      labels: labels,
       legend: {
         position: "bottom",
         fontFamily: "Inter, sans-serif",
@@ -80,10 +72,10 @@ const DonutChart: React.FC<DonutChartProps> = ({
         fillSeriesColor: false,
         y: {
           formatter: (val: number, opts: { globals: { seriesTotals: number[] } }) => {
-            const total = opts.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
-            return total > 0 ? `${(val / total * 100).toFixed(1)}%` : "0%";
-          }
-        }
+            const total = opts.globals.seriesTotals.reduce((a, b) => a + b, 0);
+            return total > 0 ? `${((val / total) * 100).toFixed(1)}%` : "0%";
+          },
+        },
       },
       dataLabels: {
         enabled: false,
@@ -105,7 +97,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         .map((cb) => cb.value);
 
       // If nothing is checked or all boxes are checked, show default data
-      const allChecked = selectedKeys.length === Object.keys(data).filter(key => key !== 'default').length;
+      const allChecked = selectedKeys.length === Object.keys(data).filter((key) => key !== "default").length;
       if (selectedKeys.length === 0 || allChecked) {
         setCurrentSeries(data.default);
         chart.updateSeries(data.default);
@@ -137,7 +129,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
         cb.removeEventListener("change", handleCheckboxChange)
       );
     };
-  }, [data, colors]);
+  }, [data, colors, centerContent, currentSeries]);
 
   return (
     <div className="flex flex-col items-center">

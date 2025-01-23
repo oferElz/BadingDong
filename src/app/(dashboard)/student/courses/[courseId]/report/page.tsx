@@ -146,35 +146,48 @@ export default function ReportPage({ params }: { params: { courseId: string } })
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold mb-2">Course Report</h1>
-          <p className="text-gray-600 dark:text-gray-400">{courseId}</p>
+          <h1 className="text-xl font-bold mb-2">Course Report</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">{courseId}</p>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="bg-white dark:bg-dark-container p-4 rounded-md flex-1 mb-6">
-        <div className="flex items-center justify-between mb-1">
-          <h2 className="text-lg font-semibold dark:text-dark-text">Course Records</h2>
-          <div className="flex items-center gap-4 w-auto">
+      <div className="bg-white dark:bg-dark-container p-3 rounded-md flex-1 mb-6">
+        {/* Increased bottom margin here to adjust spacing */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-md font-semibold dark:text-dark-text">Course Records</h2>
+          <div className="flex items-center gap-2 w-auto">
             <TableSearch value={searchValue} onChange={setSearchValue} />
           </div>
         </div>
-        <Table columns={tableColumns} renderRow={renderRow} data={filteredData} />
+        <div className="max-h-60 overflow-y-auto">
+          <Table columns={tableColumns} renderRow={renderRow} data={filteredData} />
+        </div>
       </div>
 
       {/* Charts and Status Section */}
-      <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Donut Chart */}
-        <div className="border rounded-md p-4 shadow-sm bg-white flex flex-col items-center">
-          <DonutChart
-            title="Attendance Percentage"
-            data={attendanceData}
-            colors={["#31C48D", "#F05252"]}
-          />
+        <div className="border rounded-md p-1 shadow-sm bg-white flex flex-col items-center">
+        <DonutChart
+          title="Attendance Percentage"
+          data={attendanceData}
+          colors={["#31C48D", "#F05252"]}
+          labels={["Attended", "Missed"]}
+          centerContent={{
+            label: "Attendance",
+            formatter: (series, seriesTotals) => {
+              const total = seriesTotals.reduce((a, b) => a + b, 0);
+              const attended = series[0] || 0;
+              return total > 0 ? `${((attended / total) * 100).toFixed(1)}%` : "0%";
+            },
+          }}
+        />
+
         </div>
 
         {/* Bar Chart */}
-        <div className="border rounded-md p-4 shadow-sm bg-white">
+        <div className="border rounded-md p-1 shadow-sm bg-white">
           <BarChart
             title="Attendance Overview"
             categories={["Class", "Tutorial", "Lab"]}
@@ -183,7 +196,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         </div>
 
         {/* Appeals Sent */}
-        <div className="border rounded-md shadow-sm bg-white">
+        <div className="border rounded-md shadow-sm bg-white p-1">
           <StatusComponent
             title="Appeals Sent"
             statusCards={[
