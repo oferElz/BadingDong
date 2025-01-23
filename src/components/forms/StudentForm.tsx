@@ -58,7 +58,7 @@ export default function StudentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-h-[95vh] overflow-y-auto space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
       {mode === "create" && (
         <div>
           <label className="block text-sm font-medium">Student ID</label>
