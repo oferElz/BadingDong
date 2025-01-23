@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import DonutChart from "@/components/DonutChart";
 import BarChart from "@/components/BarChart";
@@ -153,7 +154,6 @@ export default function ReportPage({ params }: { params: { courseId: string } })
 
       {/* Table Section */}
       <div className="bg-white dark:bg-dark-container p-3 rounded-md flex-1 mb-6">
-        {/* Increased bottom margin here to adjust spacing */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-md font-semibold dark:text-dark-text">Course Records</h2>
           <div className="flex items-center gap-2 w-auto">
@@ -167,26 +167,23 @@ export default function ReportPage({ params }: { params: { courseId: string } })
 
       {/* Charts and Status Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Donut Chart */}
         <div className="border rounded-md p-1 shadow-sm bg-white flex flex-col items-center">
-        <DonutChart
-          title="Attendance Percentage"
-          data={attendanceData}
-          colors={["#31C48D", "#F05252"]}
-          labels={["Attended", "Missed"]}
-          centerContent={{
-            label: "Attendance",
-            formatter: (series, seriesTotals) => {
-              const total = seriesTotals.reduce((a, b) => a + b, 0);
-              const attended = series[0] || 0;
-              return total > 0 ? `${((attended / total) * 100).toFixed(1)}%` : "0%";
-            },
-          }}
-        />
-
+          <DonutChart
+            title="Attendance Percentage"
+            data={attendanceData}
+            colors={["#31C48D", "#F05252"]}
+            labels={["Attended", "Missed"]}
+            centerContent={{
+              label: "Attendance",
+              formatter: (series, seriesTotals) => {
+                const total = seriesTotals.reduce((a, b) => a + b, 0);
+                const attended = series[0] || 0;
+                return total > 0 ? `${((attended / total) * 100).toFixed(1)}%` : "0%";
+              },
+            }}
+          />
         </div>
 
-        {/* Bar Chart */}
         <div className="border rounded-md p-1 shadow-sm bg-white">
           <BarChart
             title="Attendance Overview"
@@ -195,29 +192,13 @@ export default function ReportPage({ params }: { params: { courseId: string } })
           />
         </div>
 
-        {/* Appeals Sent */}
         <div className="border rounded-md shadow-sm bg-white p-1">
           <StatusComponent
             title="Appeals Sent"
             statusCards={[
-              {
-                value: statusData.pending,
-                label: "Pending",
-                backgroundColor: "#FEF3C7",
-                textColor: "#D97706",
-              },
-              {
-                value: statusData.approved,
-                label: "Approved",
-                backgroundColor: "#D1FAE5",
-                textColor: "#059669",
-              },
-              {
-                value: statusData.declined,
-                label: "Declined",
-                backgroundColor: "#FEE2E2",
-                textColor: "#B91C1C",
-              },
+              { value: statusData.pending, label: "Pending", backgroundColor: "#FEF3C7", textColor: "#D97706" },
+              { value: statusData.approved, label: "Approved", backgroundColor: "#D1FAE5", textColor: "#059669" },
+              { value: statusData.declined, label: "Declined", backgroundColor: "#FEE2E2", textColor: "#B91C1C" },
             ]}
           />
         </div>

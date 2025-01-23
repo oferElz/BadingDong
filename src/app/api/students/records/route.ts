@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { connectToDB } from "@/lib/database";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
@@ -9,11 +11,12 @@ const ALL_APPEAL_STATUSES = ["Pending", "Approved", "Declined"];
 
 export const GET = async (request: Request) => {
   try {
-    // Extract `userId` and `courseId` from query parameters
+    // Parse the query parameters
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
     const courseId = searchParams.get("courseId");
 
+    // Validate request parameters
     if (!userId || !courseId) {
       return NextResponse.json(
         { error: "Missing userId or courseId in the request" },
@@ -25,7 +28,7 @@ export const GET = async (request: Request) => {
     await connectToDB();
     const db = mongoose.connection.useDb("BA-DINGDONG-DB");
 
-    // Fetch attendance data from the `records` collection
+    // Fetch attendance data using an aggregation pipeline
     const attendancePipeline = [
       {
         $match: {
@@ -35,7 +38,7 @@ export const GET = async (request: Request) => {
       },
       {
         $group: {
-          _id: "$type", // Group by type (Class, Tutorial, Lab)
+          _id: "$type", // Group by lecture type (e.g., Class, Tutorial, Lab)
           attended: {
             $sum: {
               $cond: [{ $eq: ["$status", "attended"] }, 1, 0],
@@ -68,14 +71,13 @@ export const GET = async (request: Request) => {
     // Fetch all appeals for the given student
     const appealsData: any[] = await db.collection("appeals").find({ student_id: userId }).toArray();
 
-    // Filter appeals by checking their associated records
+    // Filter appeals to include only those related to the specified course
     const filteredAppeals: any[] = [];
     for (const appeal of appealsData) {
       const record = await db
         .collection("records")
         .findOne({ _id: new mongoose.Types.ObjectId(appeal.record_id) });
 
-      // Check if the record belongs to the specified course
       if (record && record.course_id === courseId) {
         filteredAppeals.push(appeal);
       }
@@ -94,12 +96,12 @@ export const GET = async (request: Request) => {
       .find({ student_id: userId, course_id: courseId })
       .toArray();
 
-    // Format the response
+    // Format the response data
     const response = {
       attendance,
       appeals,
       records: recordsData.map((record) => ({
-        date: new Date(record.date).toLocaleDateString(),
+        date: new Date(record.date).toLocaleDateString("en-US"),
         type: record.type,
         status: record.status,
       })),

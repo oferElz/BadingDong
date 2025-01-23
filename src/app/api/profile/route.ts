@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 // src/app/api/profile/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
