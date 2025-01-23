@@ -34,7 +34,7 @@ export async function GET(request: Request) {
       return {
         ...rec,
         _id: rec._id.toString(),
-        date: rec.date?.toISOString?.() || rec.date,
+        date: new Date(rec.date).toLocaleDateString("en-GB"),
         isAppealed: !!foundAppeal
       }
     })

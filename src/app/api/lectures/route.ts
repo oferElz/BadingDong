@@ -60,7 +60,47 @@ export async function POST(request: Request) {
     await connectToDB();
     const db = mongoose.connection.useDb("BA-DINGDONG-DB");
     const lecturesCollection = db.collection("lectures");
+    const usersCollection = db.collection("users");
+    const coursesCollection = db.collection("courses");
 
+    // Validate course exists
+    const course = await coursesCollection.findOne({ id: course_id });
+    if (!course) {
+      return NextResponse.json(
+        { message: `Course with ID ${course_id} does not exist` },
+        { status: 400 }
+      );
+    }
+
+    // Validate lecturer exists
+    const lecturer = await usersCollection.findOne({ id: lecturer_id });
+    if (!lecturer) {
+      return NextResponse.json(
+        { message: `Lecturer with ID ${lecturer_id} does not exist` },
+        { status: 400 }
+      );
+    }
+
+    // Validate all student IDs exist
+    if (students_ids && students_ids.length > 0) {
+      const existingStudents = await usersCollection
+        .find({ id: { $in: students_ids } })
+        .toArray();
+
+      const existingStudentIds = existingStudents.map(student => student.id);
+      const invalidStudentIds = students_ids.filter(
+        (id: string) => !existingStudentIds.includes(id)
+      );
+
+      if (invalidStudentIds.length > 0) {
+        return NextResponse.json(
+          { message: `The following student IDs do not exist: ${invalidStudentIds.join(", ")}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // If all validations pass, create the lecture
     const result = await lecturesCollection.insertOne({
       course_id,
       type,

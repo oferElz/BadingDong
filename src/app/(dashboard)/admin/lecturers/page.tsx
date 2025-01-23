@@ -113,9 +113,14 @@ export default function LecturersList() {
     const fullName = `${l.first_name} ${l.last_name}`
     return (
       fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      l.username.toLowerCase().includes(searchQuery.toLowerCase())
+      l.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      l.courses?.some(
+        (course) =>
+          course.toLowerCase().includes(searchQuery.toLowerCase()
+      )
     )
-  })
+  );
+  });
 
   const columns = [
     { header: "Name", accessor: "name" },

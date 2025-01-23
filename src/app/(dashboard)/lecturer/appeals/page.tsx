@@ -22,7 +22,6 @@ export default function LecturerAppealsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { data: session } = useSession();
 
-
   const fetchAppeals = async () => {
     try {
       const response = await fetch(
@@ -39,7 +38,7 @@ export default function LecturerAppealsPage() {
 
   useEffect(() => {
     fetchAppeals();
-  }, []);
+  }, [session?.user?.id]);
 
   const handleAction = async (
     appealId: string,
