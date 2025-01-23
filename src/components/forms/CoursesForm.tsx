@@ -57,7 +57,7 @@ export default function CoursesForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-h-[95vh] overflow-y-auto space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
       <h2 className="text-xl font-bold">
         {mode === "create" ? "Create Course" : "Update Course"}
       </h2>
