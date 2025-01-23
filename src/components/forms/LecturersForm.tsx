@@ -44,7 +44,7 @@ export default function LecturersForm({ mode, item, onClose, onCreate, onUpdate 
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-h-[95vh] overflow-y-auto space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
       {mode === "update" && item?._id && (
         <input type="hidden" value={item._id} {...register("_id")} />
       )}

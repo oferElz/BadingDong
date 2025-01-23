@@ -130,89 +130,91 @@ export default function LecturesForm({
   ] as const;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-h-[95vh] overflow-y-auto space-y-4 bg-surface dark:bg-dark-surface p-4 text-black dark:text-dark-text rounded-md">
-      <h2 className="text-xl font-bold">
-        {mode === "create" ? "Create Lecture" : "Update Lecture"}
-      </h2>
+    <div className="max-h-[95vh] overflow-y-auto space-y-4 p-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-surface dark:bg-dark-surface text-black dark:text-dark-text rounded-md">
+        <h2 className="text-xl font-bold">
+          {mode === "create" ? "Create Lecture" : "Update Lecture"}
+        </h2>
 
-      {fields.map(({ key, label, disabled }) => (
-        <div key={key} className="flex flex-col gap-1">
-          <label htmlFor={key} className="block text-sm font-medium">
-            {label}
-          </label>
-          {key === "day_of_week" ? (
-            <select
-              {...register("day_of_week")}
-              className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
-            >
-              <option value="">Select a day</option>
-              {daysOfWeek.map((day) => (
-                <option key={day} value={day}>
-                  {day}
-                </option>
-              ))}
-            </select>
-          ) : key === "type" ? (
-            <select
-              {...register("type")}
-              className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
-              disabled={disabled}
-            >
-              <option value="">Select a type</option>
-              {lectureTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          ) : key === "start_time" || key === "end_time" ? (
-            <input
-              type="time"
-              id={key}
-              {...register(key as keyof FormData)}
-              className={`border p-2 rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text ${
-                errors[key as keyof FormData]
-                  ? "border-red-500"
-                  : "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              }`}
-              disabled={disabled}
-            />
-          ) : (
-            <input
-              id={key}
-              {...register(key as keyof FormData)}
-              className={`border p-2 rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text ${
-                errors[key as keyof FormData]
-                  ? "border-red-500"
-                  : "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              }`}
-              placeholder={`Enter ${label}`}
-              disabled={disabled}
-            />
+        {fields.map(({ key, label, disabled }) => (
+          <div key={key} className="flex flex-col gap-1">
+            <label htmlFor={key} className="block text-sm font-medium">
+              {label}
+            </label>
+            {key === "day_of_week" ? (
+              <select
+                {...register("day_of_week")}
+                className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
+              >
+                <option value="">Select a day</option>
+                {daysOfWeek.map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+            ) : key === "type" ? (
+              <select
+                {...register("type")}
+                className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
+                disabled={disabled}
+              >
+                <option value="">Select a type</option>
+                {lectureTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            ) : key === "start_time" || key === "end_time" ? (
+              <input
+                type="time"
+                id={key}
+                {...register(key as keyof FormData)}
+                className={`border p-2 rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text ${
+                  errors[key as keyof FormData]
+                    ? "border-red-500"
+                    : "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                }`}
+                disabled={disabled}
+              />
+            ) : (
+              <input
+                id={key}
+                {...register(key as keyof FormData)}
+                className={`border p-2 rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text ${
+                  errors[key as keyof FormData]
+                    ? "border-red-500"
+                    : "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                }`}
+                placeholder={`Enter ${label}`}
+                disabled={disabled}
+              />
+            )}
+            {errors[key as keyof FormData] && (
+              <p className="text-red-500 dark:text-red-400 text-sm">
+                {errors[key as keyof FormData]?.message}
+              </p>
           )}
-          {errors[key as keyof FormData] && (
-            <p className="text-red-500 dark:text-red-400 text-sm">
-              {errors[key as keyof FormData]?.message}
-            </p>
-          )}
+          </div>
+        ))}
+
+        <div className="flex justify-end space-x-2">
+          <button
+            type="button"
+            className="bg-gray-200 dark:bg-grey-background px-4 py-2 rounded text-black dark:text-dark-text"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="bg-blue-500 dark:bg-blue-800 text-white dark:text-dark-text px-4 py-2 rounded"
+          >
+            {mode === "create" ? "Create" : "Update"}
+          </button>
         </div>
-      ))}
-
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          className="bg-gray-200 dark:bg-grey-background px-4 py-2 rounded text-black dark:text-dark-text"
-          onClick={onClose}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="bg-blue-500 dark:bg-blue-800 text-white dark:text-dark-text px-4 py-2 rounded"
-        >
-          {mode === "create" ? "Create" : "Update"}
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
