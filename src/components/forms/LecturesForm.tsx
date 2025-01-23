@@ -14,10 +14,14 @@ const daysOfWeek = [
   "Saturday",
 ] as const;
 
+const lectureTypes = ["Class", "Tutorial", "Lab"] as const;
+
 const schema = z.object({
   _id: z.string().optional(),
   course_id: z.string().min(1, "Course ID is required"),
-  type: z.string().min(1, "Type is required"),
+  type: z.enum(lectureTypes, {
+    errorMap: () => ({ message: "Please select a valid lecture type" }),
+  }),
   day_of_week: z.enum(daysOfWeek, {
     errorMap: () => ({ message: "Please select a day of the week" }),
   }),
@@ -148,6 +152,31 @@ export default function LecturesForm({
                 </option>
               ))}
             </select>
+          ) : key === "type" ? (
+            <select
+              {...register("type")}
+              className="border p-2 w-full rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text"
+              disabled={disabled}
+            >
+              <option value="">Select a type</option>
+              {lectureTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          ) : key === "start_time" || key === "end_time" ? (
+            <input
+              type="time"
+              id={key}
+              {...register(key as keyof FormData)}
+              className={`border p-2 rounded bg-white dark:bg-dark-surface text-black dark:text-dark-text ${
+                errors[key as keyof FormData]
+                  ? "border-red-500"
+                  : "focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              }`}
+              disabled={disabled}
+            />
           ) : (
             <input
               id={key}
