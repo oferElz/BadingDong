@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 // Define all possible types of lectures
 const ALL_LECTURE_TYPES = ["Class", "Tutorial", "Lab"];
 // Define all possible statuses of appeals
-const ALL_APPEAL_STATUSES = ["Pending", "Approved", "Rejected"];
+const ALL_APPEAL_STATUSES = ["Pending", "Approved", "Declined"];
 
 export const GET = async (request: Request) => {
   try {
@@ -66,36 +66,27 @@ export const GET = async (request: Request) => {
     });
 
     // Fetch all appeals for the given student
-    const appealsData = await db.collection("appeals").find({ student_id: userId }).toArray();
+    const appealsData: any[] = await db.collection("appeals").find({ student_id: userId }).toArray();
 
-    // Fetch all attendance records for the given student and course
-    const recordsData = await db
-      .collection("records")
-      .find({ student_id: userId, course_id: courseId })
-      .toArray();
+    // Filter appeals by checking their associated records
+    const filteredAppeals: any[] = [];
+    for (const appeal of appealsData) {
+      const record = await db
+        .collection("records")
+        .findOne({ _id: new mongoose.Types.ObjectId(appeal.record_id) });
 
-    // Create a set of valid lecture dates for the specified course
-    const validLectureDates = new Set(
-      recordsData.map((record) => ({
-        date: record.date.toISOString().split("T")[0], // Extract date in YYYY-MM-DD format
-        type: record.type, // Add lecture type to match appeals
-      }))
-    );
-
-    // Filter appeals that match the valid lecture dates and types
-    const filteredAppeals = appealsData.filter((appeal) =>
-      validLectureDates.has({
-        date: appeal.lecture_date,
-        type: appeal.lecture_type,
-      })
-    );
+      // Check if the record belongs to the specified course
+      if (record && record.course_id === courseId) {
+        filteredAppeals.push(appeal);
+      }
+    }
 
     // Count appeals by status
     const appeals = ALL_APPEAL_STATUSES.reduce((acc, status) => {
       const key = status.toLowerCase() as keyof typeof acc;
       acc[key] = filteredAppeals.filter((appeal) => appeal.status === status).length;
       return acc;
-    }, { pending: 0, approved: 0, rejected: 0 });
+    }, { pending: 0, approved: 0, declined: 0 });
 
     // Format the response
     const response = {

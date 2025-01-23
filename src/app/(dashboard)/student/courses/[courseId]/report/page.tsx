@@ -25,8 +25,8 @@ export default function ReportPage({ params }: { params: { courseId: string } })
     lab: [0, 0],
   });
   const [barChartData, setBarChartData] = useState<{ name: string; color: string; data: number[] }[]>([]);
-  const [statusData, setStatusData] = useState<{ pending: number; approved: number; rejected: number }>(
-    { pending: 0, approved: 0, rejected: 0 }
+  const [statusData, setStatusData] = useState<{ pending: number; approved: number; declined: number }>(
+    { pending: 0, approved: 0, declined: 0 }
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,7 +99,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         const status = {
           pending: data.appeals.pending || 0,
           approved: data.appeals.approved || 0,
-          rejected: data.appeals.rejected || 0,
+          declined: data.appeals.declined || 0, // Fixed
         };
         setStatusData(status);
       } catch (err: any) {
@@ -190,8 +190,8 @@ export default function ReportPage({ params }: { params: { courseId: string } })
                 textColor: "#059669",
               },
               {
-                value: statusData.rejected,
-                label: "Rejected",
+                value: statusData.declined, // Fixed
+                label: "Declined",
                 backgroundColor: "#FEE2E2",
                 textColor: "#B91C1C",
               },
