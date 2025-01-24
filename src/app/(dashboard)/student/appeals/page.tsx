@@ -36,10 +36,12 @@ export default function StudentAppealsPage() {
       console.error("Error:", error)
     }
   }
-
+  
   useEffect(() => {
     fetchRecords()
-  }, [session?.user?.id])
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps 
+  [session?.user?.id])
 
   const filteredData = records.filter(rec => {
     const combined = `${rec.course_id} ${rec.type} ${rec.day_of_week} ${rec.start_time} ${rec.date}`
