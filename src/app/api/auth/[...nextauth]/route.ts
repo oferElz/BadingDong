@@ -32,7 +32,7 @@ const handler = NextAuth({
 
           // 4) If no user found, throw (NextAuth will see this as an auth error)
           if (!user) {
-            throw new Error("Invalid credentials");
+            return null;
           }
 
           // 5) Return the user object NextAuth will store in the JWT
