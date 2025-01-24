@@ -38,7 +38,9 @@ export default function LecturerAppealsPage() {
 
   useEffect(() => {
     fetchAppeals();
-  }, [session?.user?.id]);
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [session?.user?.id]);
 
   const handleAction = async (
     appealId: string,
