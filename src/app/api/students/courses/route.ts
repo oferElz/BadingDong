@@ -1,20 +1,8 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { connectToDB } from "@/lib/database";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
-import { WithId } from "mongodb";
-
-interface Lecture extends WithId<{
-  course_id: string;
-  type: string;
-  students_ids: string[];
-}> {}
-
-interface Course extends WithId<{
-  id: string;
-  name: string;
-}> {}
 
 export const GET = async (request: Request) => {
   try {
@@ -29,47 +17,52 @@ export const GET = async (request: Request) => {
       );
     }
 
-    // Connect to the database
+    // Connect to the database (Mongoose connection)
     await connectToDB();
     const db = mongoose.connection.useDb("BA-DINGDONG-DB");
 
-    // Query the `lectures` collection for lectures where the student is enrolled
-    const lectures: Lecture[] = await db
-      .collection<Lecture>("lectures")
+    // 1) Query the lectures collection where the user is enrolled
+    const lecturesCollection = db.collection("lectures");
+    const lectures = await lecturesCollection
       .find({ students_ids: userId })
       .toArray();
 
-    if (lectures.length === 0) {
+    // If no lectures found for this user, we can return an empty array
+    if (!lectures.length) {
       return NextResponse.json([]);
     }
 
-    // Extract unique course IDs from the lectures
-    const courseIds = Array.from(
-      lectures.reduce((set, lecture) => {
-        if (lecture.course_id) set.add(lecture.course_id);
-        return set;
-      }, new Set<string>())
+    // 2) Extract unique course_ids
+    const uniqueCourseIds = new Set(
+      lectures.map((lecture) => lecture.course_id).filter(Boolean)
     );
+    const courseIds = Array.from(uniqueCourseIds);
 
-    // Query the `courses` collection for details of these courses
-    const courses: Course[] = await db
-      .collection<Course>("courses")
+    // 3) Query the courses collection for these courseIds
+    const coursesCollection = db.collection("courses");
+    const courses = await coursesCollection
       .find({ id: { $in: courseIds } })
       .toArray();
 
-    // Combine course data with lecture types
+    // 4) Build a result array by combining each course with the lecture "type" values
     const result = courses.map((course) => {
-      const types = lectures
-        .filter((lecture) => lecture.course_id === course.id)
-        .map((lecture) => lecture.type);
+      // Find all lectures for this course
+      const courseLectures = lectures.filter(
+        (lecture) => lecture.course_id === course.id
+      );
+
+      // Extract distinct "type" values for these lectures
+      const uniqueTypes = new Set(courseLectures.map((lec) => lec.type));
+      const types = Array.from(uniqueTypes);
+
       return {
         id: course.id,
         name: course.name,
-        types: Array.from(new Set(types)).join(" | "), // Combine types into a string
+        types: types.join(" | "),
       };
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error("Error fetching courses:", error);
     return NextResponse.json(
