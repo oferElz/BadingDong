@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
+import { connectToDB } from "@/lib/database";
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -14,29 +14,36 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         try {
+          // 1) Check if we even have username/password
           if (!credentials?.username || !credentials?.password) {
-            return null;
+            throw new Error("Missing username or password");
           }
+
+          // 2) Connect to Mongo (via Mongoose)
           await connectToDB();
           const db = mongoose.connection.useDb("BA-DINGDONG-DB");
-          const usersCollection = db.collection("users");
 
+          // 3) Find user in the DB
+          const usersCollection = db.collection("users");
           const user = await usersCollection.findOne({
             username: credentials.username,
-            password: credentials.password, // Note: In a real app, passwords should be hashed
+            password: credentials.password, // In production, store hashed passwords
           });
 
-          if (user) {
-            // Return only the data we want to store in the session
-            return {
-              id: user.id,
-              role: user.role,
-            };
+          // 4) If no user found, throw (NextAuth will see this as an auth error)
+          if (!user) {
+            throw new Error("Invalid credentials");
           }
-          return null;
-        } catch (error) {
-          console.error("Auth error:", error);
-          return null;
+
+          // 5) Return the user object NextAuth will store in the JWT
+          return {
+            id: user.id, // or _id.toString() if you need the actual Mongo _id
+            role: user.role,
+          };
+        } catch (err) {
+          // This error surfaces to NextAuth, which can show an error page or redirect
+          console.error("Next Auth - Authorize error:", err);
+          throw new Error("Next Auth - Authorize: Authentication error");
         }
       },
     }),
@@ -50,7 +57,6 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      // Add role and id to the session
       if (token) {
         session.user.role = token.role;
         session.user.id = token.id;
@@ -59,7 +65,7 @@ const handler = NextAuth({
     },
   },
   pages: {
-    signIn: "/",
+    signIn: "/", // or wherever your custom sign-in page is
   },
 });
 
