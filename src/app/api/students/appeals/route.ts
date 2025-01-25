@@ -4,6 +4,11 @@ import mongoose from "mongoose";
 
 export async function GET(request: Request) {
   try {
+    await connectToDB();
+    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const recordsCollection = db.collection("records");
+    const appealsCollection = db.collection("appeals");
+
     const url = new URL(request.url);
     const studentId = url.searchParams.get("studentId");
     if (!studentId) {
@@ -12,10 +17,6 @@ export async function GET(request: Request) {
         { status: 400 }
       );
     }
-    await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
-    const recordsCollection = db.collection("records");
-    const appealsCollection = db.collection("appeals");
 
     const missedRecords = await recordsCollection
       .find({ student_id: studentId, status: "missed" })
