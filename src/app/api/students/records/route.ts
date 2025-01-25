@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { connectToDB } from "@/lib/database";
 import { NextResponse } from "next/server";
@@ -11,6 +11,10 @@ const ALL_APPEAL_STATUSES = ["Pending", "Approved", "Declined"];
 
 export const GET = async (request: Request) => {
   try {
+    await connectToDB();
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
+
     // Parse the query parameters
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
@@ -23,10 +27,6 @@ export const GET = async (request: Request) => {
         { status: 400 }
       );
     }
-
-    // Connect to the database
-    await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
 
     // Fetch attendance data using an aggregation pipeline
     const attendancePipeline = [
@@ -69,7 +69,10 @@ export const GET = async (request: Request) => {
     });
 
     // Fetch all appeals for the given student
-    const appealsData: any[] = await db.collection("appeals").find({ student_id: userId }).toArray();
+    const appealsData: any[] = await db
+      .collection("appeals")
+      .find({ student_id: userId })
+      .toArray();
 
     // Filter appeals to include only those related to the specified course
     const filteredAppeals: any[] = [];
@@ -84,11 +87,16 @@ export const GET = async (request: Request) => {
     }
 
     // Count appeals by status
-    const appeals = ALL_APPEAL_STATUSES.reduce((acc, status) => {
-      const key = status.toLowerCase() as keyof typeof acc;
-      acc[key] = filteredAppeals.filter((appeal) => appeal.status === status).length;
-      return acc;
-    }, { pending: 0, approved: 0, declined: 0 });
+    const appeals = ALL_APPEAL_STATUSES.reduce(
+      (acc, status) => {
+        const key = status.toLowerCase() as keyof typeof acc;
+        acc[key] = filteredAppeals.filter(
+          (appeal) => appeal.status === status
+        ).length;
+        return acc;
+      },
+      { pending: 0, approved: 0, declined: 0 }
+    );
 
     // Fetch all records for the given student and course
     const recordsData = await db

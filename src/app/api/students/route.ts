@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { connectToDB } from "@/lib/database";
 import { NextResponse } from "next/server";
@@ -7,7 +7,8 @@ import mongoose from "mongoose";
 export const GET = async () => {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
 
     const students = await db
       .collection("users")

@@ -6,7 +6,8 @@ import mongoose from "mongoose";
 export async function GET() {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
 
     const lecturers = await db.collection("users").find({ role: "lecturer" }).toArray();
     const lectures = await db.collection("lectures").find({}).toArray();
@@ -45,7 +46,8 @@ export async function PUT(request: Request) {
     }
 
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
     const usersCollection = db.collection("users");
 
     const result = await usersCollection.insertOne({

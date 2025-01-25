@@ -6,6 +6,9 @@ import mongoose from "mongoose";
 
 export const GET = async (request: Request) => {
   try {
+    await connectToDB();
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
     // Extract `userId` from query parameters
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
@@ -16,10 +19,6 @@ export const GET = async (request: Request) => {
         { status: 400 }
       );
     }
-
-    // Connect to the database (Mongoose connection)
-    await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
 
     // 1) Query the lectures collection where the user is enrolled
     const lecturesCollection = db.collection("lectures");

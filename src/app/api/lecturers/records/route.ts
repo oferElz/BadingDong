@@ -4,6 +4,10 @@ import mongoose from "mongoose";
 
 export async function GET(request: Request) {
   try {
+    await connectToDB();
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
+
     const url = new URL(request.url);
     const courseId = url.searchParams.get("courseId");
     const type = url.searchParams.get("type");
@@ -20,9 +24,6 @@ export async function GET(request: Request) {
     if (!date) {
       return NextResponse.json([], { status: 200 });
     }
-
-    await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
 
     // First get the lecture data to ensure we have the correct lecture
     const lecturesCollection = db.collection("lectures");
