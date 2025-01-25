@@ -5,6 +5,9 @@ import mongoose from "mongoose";
 
 export async function POST(request: NextRequest) {
   try {
+    await connectToDB();
+    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+
     const { userId, oldPassword, newPassword } = await request.json();
 
     if (!userId || !oldPassword || !newPassword) {
@@ -14,8 +17,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
     const usersCollection = db.collection("users");
 
     // First verify old password

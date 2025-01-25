@@ -5,6 +5,9 @@ import mongoose from "mongoose";
 // Bulk create records
 export async function POST(request: Request) {
   try {
+    await connectToDB();
+    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+
     const body = await request.json();
     const { courseId, type, date } = body;
 
@@ -14,9 +17,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
 
     // Get lecture data to get student_ids and lecturer_id
     const lecturesCollection = db.collection("lectures");
