@@ -9,7 +9,8 @@ export async function GET(request: Request) {
     const lecturerId = url.searchParams.get("lecturerId");
 
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
     const appealsCollection = db.collection("appeals");
 
     const query: any = {};
