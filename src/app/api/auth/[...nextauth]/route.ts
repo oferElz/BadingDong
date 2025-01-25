@@ -19,7 +19,8 @@ const handler = NextAuth({
 
         try {
           await connectToDB();
-          const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+          const client = mongoose.connection.getClient();
+          const db = client.db("BA-DINGDONG-DB"); 
           const usersCollection = db.collection("users");
 
           const user = await usersCollection.findOne({

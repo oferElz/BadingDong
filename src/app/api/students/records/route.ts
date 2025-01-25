@@ -12,7 +12,8 @@ const ALL_APPEAL_STATUSES = ["Pending", "Approved", "Declined"];
 export const GET = async (request: Request) => {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
 
     // Parse the query parameters
     const { searchParams } = new URL(request.url);

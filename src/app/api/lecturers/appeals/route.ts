@@ -42,7 +42,8 @@ export async function GET(request: Request) {
 export async function PATCH(request: Request) {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
     const body = await request.json();
     const { _id, status } = body;
     if (!_id || !status) {

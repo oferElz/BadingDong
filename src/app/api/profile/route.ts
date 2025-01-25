@@ -8,7 +8,8 @@ import mongoose from "mongoose";
 export async function GET(request: NextRequest) {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
 
     // Get userId from query params
     const userId = request.nextUrl.searchParams.get("userId");

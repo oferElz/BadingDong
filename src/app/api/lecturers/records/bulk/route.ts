@@ -6,7 +6,8 @@ import mongoose from "mongoose";
 export async function POST(request: Request) {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
 
     const body = await request.json();
     const { courseId, type, date } = body;

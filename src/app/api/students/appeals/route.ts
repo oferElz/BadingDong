@@ -5,7 +5,8 @@ import mongoose from "mongoose";
 export async function GET(request: Request) {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
     const recordsCollection = db.collection("records");
     const appealsCollection = db.collection("appeals");
 

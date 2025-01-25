@@ -7,7 +7,8 @@ import mongoose from "mongoose";
 export const GET = async (request: Request) => {
   try {
     await connectToDB();
-    const db = mongoose.connection.useDb("BA-DINGDONG-DB");
+    const client = mongoose.connection.getClient();
+    const db = client.db("BA-DINGDONG-DB"); 
     // Extract `userId` from query parameters
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
