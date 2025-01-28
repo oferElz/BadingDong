@@ -1,6 +1,6 @@
 # BaDingDong
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/4aedba5c-7e3d-44a2-86f3-cf22a2413876" alt="BiteMe Logo" width="400"/>
+  <img src="https://github.com/user-attachments/assets/a0171181-4415-4912-9597-e45d95b46ed2" alt="BiteMe Logo" width="300"/>
 </p>
 
 ## Project Overview
@@ -53,8 +53,7 @@ Access the app at http://localhost:3000.
 Here are some screenshots of our application:
 
  1. **Admin Dashboard**
-
-![Admin Dashboard](https://github.com/user-attachments/assets/b4a9d3fd-050c-4d12-a2bb-37156043fa00)
+  ![Admin Dashboard](https://github.com/user-attachments/assets/7567ec59-4456-4370-b5de-71adbad9eac4)
 
  2. **Attendance Analytics**
   ![Attendance Analytics](https://github.com/user-attachments/assets/5bce7ee0-38da-45cf-89ce-aaf2586ffcaf)
