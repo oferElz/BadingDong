@@ -1,6 +1,6 @@
 # BaDingDong
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/11b8981a-37fd-4793-b3fc-a667bf9d16ef" alt="BiteMe Logo" width="400"/>
+  <img src="https://github.com/user-attachments/assets/4aedba5c-7e3d-44a2-86f3-cf22a2413876" alt="BiteMe Logo" width="400"/>
 </p>
 
 ## Project Overview
@@ -59,19 +59,17 @@ Here are some screenshots of our application:
  2. **Attendance Analytics**
   ![Attendance Analytics](https://github.com/user-attachments/assets/5bce7ee0-38da-45cf-89ce-aaf2586ffcaf)
 
- 3. **Student Appeals**
-  ![Student Appeals](https://github.com/user-attachments/assets/2133f4f9-6d8e-4ca9-b4fb-d192244669f2)
-
- 4. **Attendance Management(Student side)**
+ 3. **Attendance Management(Student side)**
   ![Student Attendance Management](https://github.com/user-attachments/assets/c39b7403-2690-4ccb-a133-c27ce539a10c)
+
+ 4. **Student Appeals**
+  ![Student Appeals](https://github.com/user-attachments/assets/2133f4f9-6d8e-4ca9-b4fb-d192244669f2)
 
  5. **Attendance Management(Lecturer side)**
   ![Lecturer Attendance Management](https://github.com/user-attachments/assets/19b72998-1881-4763-89b6-8a85043f641f)
 
  6. **Dark Mode Support**
   ![Dark Mode](https://github.com/user-attachments/assets/180e536f-f40f-4fc4-8a34-27c194bc973f)
-
-Toggle between light and dark themes.
 
 
 ## Project Outcomes
