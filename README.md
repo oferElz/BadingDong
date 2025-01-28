@@ -1,6 +1,7 @@
 # BaDingDong
-
-<img width="197" alt="BadingDong" src="https://github.com/user-attachments/assets/11b8981a-37fd-4793-b3fc-a667bf9d16ef" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/11b8981a-37fd-4793-b3fc-a667bf9d16ef" alt="BiteMe Logo" width="400"/>
+</p>
 
 ## Project Overview
 BaDingDong is a comprehensive attendance management system developed for academic institutions. It provides an efficient and user-friendly solution to manage attendance, appeals, and analytics. The application supports multiple user roles, including Admin, Lecturer, and Student, each with specific responsibilities and access levels.
@@ -47,12 +48,13 @@ Before you begin, ensure you have the following installed on your system:
 ```bash
 npm run dev
 Access the app at http://localhost:3000.
-
+```
 ## Screenshots
 Here are some screenshots of our application:
 
  1. **Admin Dashboard**
-  ![Admin Dashboard](https://github.com/user-attachments/assets/b4a9d3fd-050c-4d12-a2bb-37156043fa00)
+
+![Admin Dashboard](https://github.com/user-attachments/assets/b4a9d3fd-050c-4d12-a2bb-37156043fa00)
 
  2. **Attendance Analytics**
   ![Attendance Analytics](https://github.com/user-attachments/assets/5bce7ee0-38da-45cf-89ce-aaf2586ffcaf)
