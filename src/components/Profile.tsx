@@ -6,6 +6,7 @@ const passwordSchema = z.object({
   newPassword: z.string().min(6, "New Password must be at least 6 characters"),
 });
 
+// Define a UserProfile interface to describe the structure of the user object.
 interface UserProfile {
   id: string;
   username: string;
@@ -15,6 +16,9 @@ interface UserProfile {
   lastName?: string;
 }
 
+// Define props for the Profile component.
+// user: contains the profile details.
+// onPasswordChange: a function that takes the old and new password and returns a Promise.
 interface ProfileProps {
   user: UserProfile;
   onPasswordChange: (oldPassword: string, newPassword: string) => Promise<void>;
@@ -27,17 +31,22 @@ const Profile = ({ user, onPasswordChange }: ProfileProps) => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Function to reset password input fields and clear any error message.
   const resetForm = () => {
     setOldPassword("");
     setNewPassword("");
     setError(null);
   };
 
+  // Function to close the modal and reset the form.
   const handleCloseModal = () => {
     setShowModal(false);
     resetForm();
   };
 
+  // Handler for form submission.
+  // Validates password fields using the zod schema, calls onPasswordChange,
+  // and handles success or error responses.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);

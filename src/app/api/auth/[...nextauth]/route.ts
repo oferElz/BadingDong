@@ -3,15 +3,19 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
+// This is NextAuth configuration for handling user authentication
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
+  // Providers define various ways a user can log in; here we use a custom credentials provider.
   providers: [
     CredentialsProvider({
       name: "Credentials",
+      // Credentials expected from the client
       credentials: {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
+      // 'authorize' method checks the user's credentials against the DB.
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
           return null;
@@ -23,9 +27,10 @@ const handler = NextAuth({
           const db = client.db("BA-DINGDONG-DB"); 
           const usersCollection = db.collection("users");
 
+          // Find a user document matching the provided username/password
           const user = await usersCollection.findOne({
             username: credentials.username,
-            password: credentials.password, // Note: In a real app, passwords should be hashed
+            password: credentials.password, 
           });
 
           if (user) {

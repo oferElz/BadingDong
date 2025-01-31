@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
+// GET endpoint: Retrieves all user data from the database.
 export async function GET() {
   try {
     await connectToDB();

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
+// GET endpoint: Fetches appeals by optional status and lecturerId.
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
@@ -40,6 +41,7 @@ export async function GET(request: Request) {
   }
 }
 
+// PATCH endpoint: Updates a single appeal's status (e.g., approve/decline).
 export async function PATCH(request: Request) {
   try {
     await connectToDB();

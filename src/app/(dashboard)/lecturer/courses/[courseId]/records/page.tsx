@@ -4,10 +4,11 @@ import { useRouter, useSearchParams, useParams } from "next/navigation";
 import TableSearch from "@/components/TableSearch";
 import Image from "next/image";
 
+// Interface defining the shape of a student object
 interface Student {
-  id: string;
-  name: string;
-  status: "attended" | "missed";
+  id: string; // Unique identifier for the student
+  name: string; // Student's full name
+  status: "attended" | "missed"; // Attendance status
 }
 
 export default function RecordsPage() {
@@ -26,6 +27,8 @@ export default function RecordsPage() {
   const courseId = params.courseId as string;
   const type = searchParams.get("type");
 
+  // Fetch attendance records from the server based on the selected date,
+  // the current courseId, and the class type
   useEffect(() => {
     const fetchAttendance = async () => {
       if (!courseId || !type) return;
@@ -47,7 +50,7 @@ export default function RecordsPage() {
     fetchAttendance();
   }, [courseId, type, selectedDate]);
 
-  // Search functionality
+  // Filter the students whenever searchTerm changes
   useEffect(() => {
     const searchTermLower = searchTerm.toLowerCase();
     const filtered = students.filter(
@@ -59,6 +62,7 @@ export default function RecordsPage() {
     setFilteredStudents(filtered);
   }, [searchTerm, students]);
 
+  // Toggle a student's attendance status between 'attended' and 'missed'
   const toggleAttendance = async (studentId: string, currentStatus: string) => {
     try {
       const attendanceDate =
@@ -92,10 +96,12 @@ export default function RecordsPage() {
     }
   };
 
+  // Handler to update the date used for fetching records
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
   };
 
+  // Create attendance records for the current date
   const handleCreateRecords = async () => {
     const confirmCreate = window.confirm(
       "Are you sure you want to create records for today?"
@@ -128,6 +134,7 @@ export default function RecordsPage() {
     }
   };
 
+  // Delete attendance records for the current date
   const handleDeleteRecords = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete all records for today?"

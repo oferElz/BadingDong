@@ -3,6 +3,7 @@ import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
 // Bulk create records
+// Creates attendance records for all students in a given lecture on a specified date.
 export async function POST(request: Request) {
   try {
     await connectToDB();

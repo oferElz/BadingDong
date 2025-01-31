@@ -5,22 +5,24 @@ import Table from "@/components/Table";
 import Image from "next/image";
 import TableSearch from "@/components/TableSearch";
 
+// Type definition for user details
 type UserDetails = {
-  id: string;
-  name: string;
+  id: string; // Unique user ID
+  name: string; // User name
 };
 
+// Type definition for a lecture document
 type LectureDoc = {
-  _id: string; // Changed to string after transformation
-  course_id: string;
-  type: string;
-  day_of_week: string;
-  start_time: string;
-  end_time: string;
-  lecturer_id: string;
-  lecturer_details: UserDetails;
-  students_ids: string[];
-  students_details: UserDetails[];
+  _id: string; // Unique lecture ID
+  course_id: string; // Associated course ID
+  type: string; // Lecture type (class, lab, tutorial)
+  day_of_week: string; // Day the lecture occurs
+  start_time: string; // Lecture start time
+  end_time: string; // Lecture end time
+  lecturer_id: string; // ID of the assigned lecturer
+  lecturer_details: UserDetails; // Lecturer details
+  students_ids: string[]; // List of student IDs
+  students_details: UserDetails[]; // Details of enrolled students
 };
 
 // Define table columns
@@ -40,6 +42,7 @@ export default function LecturesPage() {
   const [expandedLecture, setExpandedLecture] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Fetch lectures from DB
   const fetchLectures = async () => {
     try {
       const response = await fetch("/api/lectures");
@@ -48,6 +51,7 @@ export default function LecturesPage() {
       }
       const data: any[] = await response.json();
 
+      // Transform lecture data to ensure proper ID formatting
       const transformedData: LectureDoc[] = data.map((lecture) => ({
         ...lecture,
         _id: typeof lecture._id === "string" ? lecture._id : lecture._id.$oid,
@@ -59,6 +63,7 @@ export default function LecturesPage() {
     }
   };
 
+  // Fetch lectures on component mount
   useEffect(() => {
     fetchLectures();
   }, []);

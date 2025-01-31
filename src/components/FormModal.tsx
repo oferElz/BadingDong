@@ -6,6 +6,11 @@ import StudentForm from "@/components/forms/StudentForm";
 import LecturesForm from "./forms/LecturesForm";
 import LecturersForm from "./forms/LecturersForm";
 
+// Define the types for the FormModal component.
+// mode: indicates the operation type ("create", "update", or "delete").
+// model: specifies which data model the form is for ("courses", "lectures", "lecturers", or "students").
+// item: optional data item used in update or delete operations.
+// onCreate, onUpdate, onDelete: optional callbacks for handling respective actions.
 type Props = {
   mode: "create" | "update" | "delete";
   model: "courses" | "lectures" | "lecturers" | "students"; 
@@ -26,6 +31,7 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
       ? "bg-Sky"
       : "bg-Purple";
 
+  // Handler function for delete action.
   const handleDelete = () => {
     if (item && onDelete) {
       onDelete(item._id);
@@ -33,7 +39,8 @@ export default function FormModal({ mode, model, item, onCreate, onUpdate, onDel
     setOpen(false);
   };
 
-
+  // Map each model to its corresponding form component.
+  // Each form receives mode, item, and callback props, as well as an onClose function to close the modal.
   const formMap: Record<string, JSX.Element> = {
     courses: (
       <CoursesForm

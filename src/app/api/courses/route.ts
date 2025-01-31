@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
+// GET endpoint: Retrieves all courses from the "courses" collection.
 export async function GET() {
   try {
     await connectToDB();
@@ -20,6 +21,7 @@ export async function GET() {
   }
 }
 
+// POST endpoint: Creates a new course.
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -30,6 +32,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Connect and select the appropriate database/collection.
     await connectToDB();
     const db = mongoose.connection.useDb("BA-DINGDONG-DB");
     const coursesCollection = db.collection("courses");
@@ -48,6 +51,7 @@ export async function POST(request: Request) {
   }
 }
 
+// PUT endpoint: Updates an existing course and also updates any related lectures.
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
@@ -94,6 +98,7 @@ export async function PUT(request: Request) {
   }
 }
 
+// DELETE endpoint: Deletes a course and any lectures associated with that course.
 export async function DELETE(request: Request) {
   try {
     const body = await request.json();

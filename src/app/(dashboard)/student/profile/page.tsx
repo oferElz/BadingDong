@@ -11,6 +11,7 @@ export default function StudentProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch the student's profile information from DB
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -28,6 +29,7 @@ export default function StudentProfilePage() {
     if (userId) fetchProfile();
   }, [userId]);
 
+  // Handle changing the student's password
   const handlePasswordChange = async (
     oldPassword: string,
     newPassword: string
@@ -55,6 +57,7 @@ export default function StudentProfilePage() {
     }
   };
 
+  // Conditional rendering based on loading status or profile data presence
   if (loading) return <div>Loading...</div>;
   if (!user) return <div>Failed to load profile</div>;
 

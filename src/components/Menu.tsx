@@ -6,8 +6,12 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 
+// Define the allowed actions for menu items
 type Action = "home" | "logout" | "darkmode";
 
+// Define the structure for menu sections and items
+// Each section has a title and a list of items
+// Each item has an icon, label, optional action, optional href, and an array of roles (visible) that can see it
 const menuItems: {
   title: string;
   items: {
@@ -84,6 +88,7 @@ const menuItems: {
   },
 ];
 
+// Menu component renders a navigational menu based on user role and theme
 const Menu = () => {
   const router = useRouter();
   const { data: session } = useSession();

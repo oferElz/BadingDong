@@ -4,17 +4,18 @@ import Table from "@/components/Table"
 import TableSearch from "@/components/TableSearch"
 import FormModal from "@/components/FormModal"
 
+// Type definition for a course item
 type ClassItem = {
-  _id: string
-  id: string
-  name: string
+  _id: string; // Unique identifier for database purposes
+  id: string; // Course code
+  name: string; // Course name
 }
 
 export default function ClassListPage() {
   const [classList, setClassList] = useState<ClassItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const role = "admin"
-
+  // Fetches the list of courses from the DB
   const fetchCourses = async () => {
     try {
       const response = await fetch("/api/courses")
@@ -25,16 +26,18 @@ export default function ClassListPage() {
     }
   }
 
+  // Fetch courses when the component mounts
   useEffect(() => {
     fetchCourses()
   }, [])
 
+  // Filters the course list based on the search query
   const filteredData = classList.filter(
     item =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.id.toLowerCase().includes(searchQuery.toLowerCase())
   )
-
+  // Handles course creation
   const handleCreate = async (newItem: Omit<ClassItem, "_id">) => {
     const exists = classList.find(i => i.id.toLowerCase() === newItem.id.toLowerCase())
     if (exists) {
@@ -53,7 +56,7 @@ export default function ClassListPage() {
       console.error("Error creating course:", error)
     }
   }
-
+  // Handles course updates
   const handleUpdate = async (updatedItem: ClassItem) => {
     const conflict = classList.find(
       i => i._id !== updatedItem._id && i.id.toLowerCase() === updatedItem.id.toLowerCase()
@@ -74,7 +77,7 @@ export default function ClassListPage() {
       console.error("Error updating course:", error)
     }
   }
-
+  // Handles course deletion
   const handleDelete = async (_id: string) => {
     try {
       const response = await fetch("/api/courses", {
@@ -88,13 +91,13 @@ export default function ClassListPage() {
       console.error("Error deleting course:", error)
     }
   }
-
+  // Defines the columns for the table
   const columns = [
     { header: "Course Name", accessor: "name" },
     { header: "Course Code", accessor: "id" },
     { header: "Actions", accessor: "action" },
   ]
-
+  // Renders each row in the table
   const renderRow = (item: ClassItem) => (
     <tr
       key={item._id}
@@ -105,12 +108,14 @@ export default function ClassListPage() {
       <td className="px-4 py-2">
         {role === "admin" && (
           <div className="flex items-center gap-2">
+            {/* Edit Course Modal */}
             <FormModal
               model="courses"
               mode="update"
               item={item}
               onUpdate={handleUpdate}
             />
+            {/* Delete Course Modal */}
             <FormModal
               model="courses"
               mode="delete"
@@ -128,10 +133,12 @@ export default function ClassListPage() {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-lg font-semibold dark:text-dark-text">All Courses</h1>
         <div className="flex items-center gap-4 w-auto md:w-auto flex-nowrap">
+          {/* Search Bar for Filtering Courses */}
           <TableSearch value={searchQuery} onChange={setSearchQuery} />
           {role === "admin" && <FormModal model="courses" mode="create" onCreate={handleCreate} />}
         </div>
       </div>
+      {/* Course Table Display */}
       <Table columns={columns} renderRow={renderRow} data={filteredData} />
     </div>
   )

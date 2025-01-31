@@ -11,11 +11,12 @@ import { useSession } from "next-auth/react";
 const DonutChart = dynamic(() => import("@/components/DonutChart"), { ssr: false });
 const BarChart = dynamic(() => import("@/components/BarChart"), { ssr: false });
 
+// Data structure representing each row in the attendance records table
 type TableRow = {
-  _id: string;
-  date: string;
-  type: string;
-  status: string;
+  _id: string; // Unique identifier for the record
+  date: string; // Date of the record
+  type: string; // Type of class (Class, Tutorial, Lab)
+  status: string; // Attendance status for that record (Attended, Missed)
 };
 
 export default function ReportPage({ params }: { params: { courseId: string } }) {
@@ -38,12 +39,14 @@ export default function ReportPage({ params }: { params: { courseId: string } })
   const [error, setError] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
 
+  // Define the columns for the attendance table
   const tableColumns = [
     { header: "Date", accessor: "date" },
     { header: "Type", accessor: "type" },
     { header: "Status", accessor: "status" },
   ];
 
+  // Fetch attendance data, appeals, and records from the DB
   useEffect(() => {
     if (!userId || !courseId) return;
 
@@ -57,6 +60,8 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         }
         const data = await response.json();
 
+        // Construct an object storing total attended/missed
+        // for all course types together and for each type
         const newData: Record<string, [number, number]> = {
           default: [
             data.attendance.reduce((sum: number, item: { attended: number }) => sum + item.attended, 0),
@@ -78,6 +83,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
 
         setAttendanceData(newData);
 
+        // Prepare bar chart data from the newData object
         const barData = [
           {
             name: "Attended",
@@ -100,6 +106,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         ];
         setBarChartData(barData);
 
+        // Extract appeals data for pending, approved, and declined
         const status = {
           pending: data.appeals.pending || 0,
           approved: data.appeals.approved || 0,
@@ -107,6 +114,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
         };
         setStatusData(status);
 
+        // Set the table data for the attendance records
         setTableData(data.records || []);
       } catch (err: any) {
         console.error("Error fetching attendance data:", err);
@@ -119,6 +127,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
     fetchData();
   }, [userId, courseId]);
 
+  // If the page is still loading data, display a loading message
   if (loading) {
     return <p className="p-6 text-gray-700 dark:text-gray-300">Loading...</p>;
   }
@@ -127,6 +136,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
     return <p className="p-6 text-red-500 dark:text-red-400">Error: {error}</p>;
   }
 
+  // Filter the table records based on the user's search input
   const filteredData = tableData.filter(
     (row) =>
       row.date.toLowerCase().includes(searchValue.toLowerCase()) ||
@@ -134,6 +144,7 @@ export default function ReportPage({ params }: { params: { courseId: string } })
       row.status.toLowerCase().includes(searchValue.toLowerCase())
   );
 
+  // Render row in the table
   const renderRow = (item: TableRow) => (
     <tr
       key={item._id}

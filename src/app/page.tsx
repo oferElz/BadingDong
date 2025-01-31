@@ -3,11 +3,16 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+// A simple login page. Users enter their username and password,
+// and upon successful sign-in, they are redirected based on their role.
 const Homepage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
+  
+  // Attempts to log in using NextAuth "credentials" provider.
+  // On success, fetches the session to determine the user's role
+  // and redirects to the corresponding route.
   const handleLogin = async () => {
     try {
       const result = await signIn("credentials", {

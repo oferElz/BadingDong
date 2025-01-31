@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 
+// A reusable Card component that displays a title, description.
 interface CardProps {
   title: string;
   description: string;
