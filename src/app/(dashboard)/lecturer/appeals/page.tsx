@@ -4,17 +4,17 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { useSession } from "next-auth/react";
 
-
+// Type definition for an appeal object
 type Appeal = {
-  _id: string;
-  lecture_date: string;
-  lecture_time: string;
-  lecture_type: string;
-  lecturer: string;
-  appeal_date: string;
-  student_id: string;
-  appeal_reason: string;
-  status: string;
+  _id: string; // Unique identifier for the appeal
+  lecture_date: string; // Date of the lecture the appeal is related to
+  lecture_time: string; // Time of the lecture
+  lecture_type: string; // Type of lecture (class, tutorial, lab)
+  lecturer: string; // Lecturer's ID
+  appeal_date: string; // Date when the appeal was submitted
+  student_id: string; // ID of the student who submitted the appeal
+  appeal_reason: string; // Reason provided by the student for appealing
+  status: string; // Status of the appeal (Pending, Approved, Declined)
 };
 
 export default function LecturerAppealsPage() {
@@ -22,6 +22,8 @@ export default function LecturerAppealsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { data: session } = useSession();
 
+  // Fetch appeals from the DB, filtering by 'Pending' status 
+  // and matching the current lecturer's ID from the session
   const fetchAppeals = async () => {
     try {
       const response = await fetch(
@@ -36,12 +38,15 @@ export default function LecturerAppealsPage() {
     }
   };
 
+  // fetch or Re-fetch appeals
   useEffect(() => {
     fetchAppeals();
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [session?.user?.id]);
 
+
+  // Handle approving or declining an appeal
   const handleAction = async (
     appealId: string,
     newStatus: "Approved" | "Declined"
@@ -53,17 +58,19 @@ export default function LecturerAppealsPage() {
         body: JSON.stringify({ _id: appealId, status: newStatus }),
       });
       if (!response.ok) throw new Error("Failed to update appeal");
-      await fetchAppeals();
+      await fetchAppeals(); // Refresh appeals list to reflect changes
     } catch (error) {
       console.error("Error updating appeal:", error);
     }
   };
 
+  // Filter appeals based on the user's search query
   const filteredData = appeals.filter((item) => {
     const combined = `${item.lecture_date} ${item.lecture_time} ${item.lecture_type} ${item.student_id} ${item.appeal_reason}`;
     return combined.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
+  // Define columns for rendering the table headers
   const columns = [
     { header: "Lecture Date", accessor: "lecture_date" },
     { header: "Lecture Time", accessor: "lecture_time" },
@@ -73,6 +80,7 @@ export default function LecturerAppealsPage() {
     { header: "Actions", accessor: "action" },
   ];
 
+  // Render each row of the table, including buttons to approve or decline
   const renderRow = (item: Appeal) => (
     <tr
       key={item._id}
@@ -124,5 +132,3 @@ export default function LecturerAppealsPage() {
     </div>
   );
 }
-
-//check

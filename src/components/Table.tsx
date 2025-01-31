@@ -1,3 +1,4 @@
+// Table component renders a responsive table based on provided columns, data, and a custom row renderer.
 const Table = ({
   columns,
   renderRow,

@@ -5,13 +5,14 @@ import TableSearch from "@/components/TableSearch"
 import FormModal from "@/components/FormModal"
 import { useSession } from "next-auth/react"
 
+// Type definition for a student object
 type Student = {
-  _id: string
-  first_name: string
-  last_name: string
-  username: string
-  id: string
-  role: string
+  _id: string; // Unique identifier for the student
+  first_name: string; // Student's first name
+  last_name: string; // Student's last name
+  username: string; // Unique username
+  id: string; // Student ID
+  role: string; // Student's role
 }
 
 export default function StudentListPage() {
@@ -20,6 +21,7 @@ export default function StudentListPage() {
   const role = "admin"
   const { data: session } = useSession()
 
+  // Fetch students from DB
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -34,6 +36,7 @@ export default function StudentListPage() {
     fetchStudents()
   }, [])
 
+  // Filter students based on search query
   const filteredData = studentsData.filter(student => {
     const fullName = `${student.first_name} ${student.last_name}`
     return (
@@ -43,6 +46,7 @@ export default function StudentListPage() {
     )
   })
 
+  // Handle student creation
   const handleCreate = async (newStudent: Omit<Student, "_id">) => {
     if (studentsData.find(i => i.id.toLowerCase() === newStudent.id.toLowerCase())) {
       alert("A student with this ID already exists.")
@@ -66,6 +70,7 @@ export default function StudentListPage() {
     }
   }
 
+  // Handle student updates
   const handleUpdate = async (updatedStudent: Student) => {
     const conflictId = studentsData.find(
       i =>
@@ -99,6 +104,7 @@ export default function StudentListPage() {
     }
   }
 
+  // Handle student deletion
   const handleDelete = async (_id: string) => {
     try {
       const response = await fetch("/api/students", {
@@ -159,6 +165,7 @@ export default function StudentListPage() {
           {role === "admin" && <FormModal model="students" mode="create" onCreate={handleCreate} />}
         </div>
       </div>
+      {/* Students Table */}
       <Table columns={columns} renderRow={renderRow} data={filteredData} />
     </div>
   )

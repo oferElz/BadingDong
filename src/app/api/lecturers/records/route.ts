@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
+// GET endpoint: Retrieves attendance records for a specific date, course, and class type.
+// Returns an array of students (ID, name, and current attendance status)
 export async function GET(request: Request) {
   try {
     await connectToDB();

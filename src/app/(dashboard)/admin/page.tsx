@@ -1,3 +1,5 @@
+// This page represents the main admin dashboard page, providing an overview
+// and quick tips for managing lectures, students, lecturers, and courses.
 const AdminPage = () => {
   return (
     <div className="min-w-[250px] p-4 h-full overflow-hidden">

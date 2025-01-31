@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ApexCharts from "apexcharts";
 
+// A DonutChart component that displays attendance data
 interface DonutChartProps {
   title: string;
   data: Record<string, [number, number]>;

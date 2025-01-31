@@ -2,9 +2,11 @@
 import React, { useEffect, useRef } from "react";
 import ApexCharts from "apexcharts";
 
+// The BarChart component displays a horizontal bar chart
+// using ApexCharts It supports dynamic updates of categories
 interface BarChartProps {
-  title: string;
-  categories: string[];
+  title: string; // The chart's title
+  categories: string[]; // Labels for each bar axis item
   data: { name: string; color: string; data: number[] }[];
 }
 
@@ -12,6 +14,7 @@ const BarChart: React.FC<BarChartProps> = ({ title, categories, data }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<ApexCharts | null>(null);
 
+  // Initialize and render the chart on mount
   useEffect(() => {
     const options = {
       series: data,
@@ -89,6 +92,7 @@ const BarChart: React.FC<BarChartProps> = ({ title, categories, data }) => {
     };
   }, [categories, data]);
 
+  // Update chart options if categories or data change
   useEffect(() => {
     if (chartInstance.current) {
       chartInstance.current.updateOptions({

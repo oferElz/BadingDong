@@ -1,6 +1,11 @@
 "use client";
 import React from "react";
 
+// Interface for each status card data.
+// value: The numerical value to display.
+// label: A description label for the value.
+// backgroundColor: The background color for the card.
+// textColor: The text color for the card.
 interface StatusCard {
   value: number;
   label: string;
@@ -13,6 +18,7 @@ interface StatusComponentProps {
   statusCards: StatusCard[];
 }
 
+// StatusComponent: Renders a title and a list of status cards.
 const StatusComponent: React.FC<StatusComponentProps> = ({ title, statusCards }) => {
   return (
     <div className="p-4 h-full flex flex-col">

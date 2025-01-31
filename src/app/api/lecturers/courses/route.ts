@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 
 export const dynamic = "force-dynamic";
 
+// GET endpoint: Fetches all courses and corresponding class data for a given lecturer.
 export async function GET(request: Request) {
   try {
     await connectToDB();

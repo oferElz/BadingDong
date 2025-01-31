@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
+// GET endpoint: Fetches all lectures, enriching them with lecturer
 export async function GET() {
   try {
     await connectToDB();
@@ -49,6 +50,7 @@ export async function GET() {
   }
 }
 
+// POST endpoint: Creates a new lecture if the course and lecturer exist
 export async function POST(request: Request) {
   try {
     const body = await request.json();

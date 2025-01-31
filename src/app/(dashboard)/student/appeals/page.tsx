@@ -6,16 +6,17 @@ import Image from "next/image"
 import { useSession } from "next-auth/react"
 import StudentAppealForm from "@/components/forms/StudentAppealForm"
 
+// Type definition for a single missed record
 type MissedRecord = {
-  _id: string
-  course_id: string
-  type: string
-  day_of_week: string
-  start_time: string
-  date: string
-  lecturer_id: string
-  status: string
-  isAppealed: boolean
+  _id: string; // Unique record identifier
+  course_id: string; // Course code
+  type: string; // Type of class (lecture, lab, class)
+  day_of_week: string; // Day of week of the record
+  start_time: string; // Start time of the record
+  date: string; // Date of the record
+  lecturer_id: string; //ID of lecturer related to record
+  status: string; // Attendance status
+  isAppealed: boolean; // Flag indicating whether the student has already submitted an appeal
 }
 
 export default function StudentAppealsPage() {
@@ -37,17 +38,20 @@ export default function StudentAppealsPage() {
     }
   }
   
+  // Fetch the missed or missed-appealable records for the student
   useEffect(() => {
     fetchRecords()
   },
   // eslint-disable-next-line react-hooks/exhaustive-deps 
   [session?.user?.id])
 
+  // Filter records based on the search query
   const filteredData = records.filter(rec => {
     const combined = `${rec.course_id} ${rec.type} ${rec.day_of_week} ${rec.start_time} ${rec.date}`
     return combined.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
+  // Define the columns for the Table component
   const columns = [
     { header: "Date", accessor: "date" },
     { header: "Course", accessor: "course_id" },
@@ -57,6 +61,7 @@ export default function StudentAppealsPage() {
     { header: "Actions", accessor: "action" },
   ]
 
+  // Renders each row of the table, including an 'Appeal' button if the record hasn't been appealed yet
   const renderRow = (item: MissedRecord) => (
     <tr
       key={item._id}

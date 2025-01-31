@@ -1,6 +1,9 @@
 import Menu from "@/components/Menu";
 import Image from "next/image";
 
+// This layout component structures the dashboard page into two main sections:
+// A left sidebar containing a logo and navigational Menu
+// A main content area on the right that displays children content
 export default function DashboardLayout({
   children,
 }: Readonly<{

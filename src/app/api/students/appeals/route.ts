@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/database";
 import mongoose from "mongoose";
 
+// GET endpoint: Retrieves all missed attendance records for a given student
+// along with information on whether an appeal has already been submitted.
 export async function GET(request: Request) {
   try {
     await connectToDB();
@@ -55,6 +57,7 @@ export async function GET(request: Request) {
   }
 }
 
+// POST endpoint: Creates a new appeal record for a missed attendance.
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -83,6 +86,7 @@ export async function POST(request: Request) {
     const db = mongoose.connection.useDb("BA-DINGDONG-DB");
     const appealsCollection = db.collection("appeals");
 
+    // Ensure no existing appeal for this record
     const existing = await appealsCollection.findOne({ record_id });
     if (existing) {
       return NextResponse.json(
@@ -91,9 +95,11 @@ export async function POST(request: Request) {
       );
     }
 
+    // Convert lecture date from DD/MM/YYYY to a Date object
     const [day, month, year] = lecture_date.split("/");
     const parsedDate = new Date(Number(year), Number(month) - 1, Number(day));
 
+    // Construct the appeal document
     const newAppeal = {
       lecture_date: parsedDate,
       lecture_time,

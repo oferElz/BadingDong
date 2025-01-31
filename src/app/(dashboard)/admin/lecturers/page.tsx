@@ -5,13 +5,14 @@ import TableSearch from "@/components/TableSearch"
 import FormModal from "@/components/FormModal"
 import { useSession } from "next-auth/react"
 
+// Type definition for a lecturer object
 type Lecturer = {
-  _id: string
-  first_name: string
-  last_name: string
-  username: string
-  id?: string
-  courses: string[]
+  _id: string; // Unique identifier for database
+  first_name: string; // Lecturer's first name
+  last_name: string; // Lecturer's last name
+  username: string; // Lecturer's unique username
+  id?: string; // Optional ID field
+  courses: string[]; // List of courses assigned to the lecturer
 }
 
 export default function LecturersList() {
@@ -21,10 +22,12 @@ export default function LecturersList() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const { data: session } = useSession()
 
+  // Set user role from session data
   useEffect(() => {
     if (session?.user?.role) setRole(session.user.role)
   }, [session])
 
+  // Fetches lecturers from DB
   const fetchLecturers = async () => {
     try {
       const response = await fetch("/api/lecturers")
@@ -36,10 +39,12 @@ export default function LecturersList() {
     }
   }
 
+  // Fetch lecturers when the component mounts
   useEffect(() => {
     fetchLecturers()
   }, [])
 
+  // Handles creation of a new lecturer
   const handleCreate = async (newLecturer: Omit<Lecturer, "_id">) => {
     if (lecturersData.find(i => i.id?.toLowerCase() === newLecturer.id?.toLowerCase())) {
       alert("A lecturer with this ID already exists.")
@@ -63,6 +68,7 @@ export default function LecturersList() {
     }
   }
 
+  // Handles updating an existing lecturer
   const handleUpdate = async (updatedLecturer: Lecturer) => {
     const conflictId = lecturersData.find(
       i =>
@@ -95,6 +101,7 @@ export default function LecturersList() {
     }
   }
 
+  // Handles deletion of a lecturer
   const handleDelete = async (id: string) => {
     try {
       const response = await fetch("/api/lecturers", {
@@ -109,6 +116,7 @@ export default function LecturersList() {
     }
   }
 
+  // Filters the lecturers list based on search query
   const filteredData = lecturersData.filter(l => {
     const fullName = `${l.first_name} ${l.last_name}`
     return (
@@ -122,6 +130,7 @@ export default function LecturersList() {
   );
   });
 
+  // Defines the columns for the table
   const columns = [
     { header: "Name", accessor: "name" },
     { header: "Username", accessor: "username" },

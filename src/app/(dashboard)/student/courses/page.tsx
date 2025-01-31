@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import Card from "@/components/Card";
 import { useSession } from "next-auth/react";
 
+// Type definition for a student related course object
 interface Course {
-  id: string;
-  name: string;
+  id: string; // Unique course identifier
+  name: string; // Course name
   types: string; // "Class | Tutorial | Lab"
 }
 
@@ -16,6 +17,7 @@ export default function CoursesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch the courses for the student when the component mounts
   useEffect(() => {
     if (!userId) return;
 
@@ -25,6 +27,7 @@ export default function CoursesPage() {
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
         }
+        // Parse courses JSON data into our Course type array
         const data: Course[] = await response.json();
         setCourses(data);
       } catch (err: any) {
@@ -38,6 +41,7 @@ export default function CoursesPage() {
     fetchCourses();
   }, [userId]);
 
+  // Show a loading message until the fetch operation is complete
   if (loading) {
     return <p className="p-6 dark:text-dark-text">Loading courses...</p>;
   }

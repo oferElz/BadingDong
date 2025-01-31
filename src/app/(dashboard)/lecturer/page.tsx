@@ -1,3 +1,5 @@
+// This page represents the main dashboard for lecturers,
+// providing information and quick tips for managing courses, appeals, and personal profile.
 const LecturerPage = () => {
   return (
     <div className="min-w-[250px] p-4 h-full overflow-hidden">

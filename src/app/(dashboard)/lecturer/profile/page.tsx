@@ -1,4 +1,3 @@
-// src/app/(dashboard)/lecturer/profile/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ export default function LecturerProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch the user's profile from the DB
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -28,6 +28,7 @@ export default function LecturerProfilePage() {
     if (userId) fetchProfile();
   }, [userId]);
 
+  // Function to handle password changes, sending the old and new passwords to the backend
   const handlePasswordChange = async (
     oldPassword: string,
     newPassword: string
@@ -57,9 +58,11 @@ export default function LecturerProfilePage() {
     }
   };
 
+  // Conditional rendering depending on the session and loading states
   if (!session) return <div>Please log in</div>;
   if (loading) return <div>Loading...</div>;
   if (!user) return <div>Failed to load profile</div>;
 
+  // Render the Profile component once user data is loaded
   return <Profile user={user} onPasswordChange={handlePasswordChange} />;
 }

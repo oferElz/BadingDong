@@ -3,18 +3,20 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+// Represents each individual class scheduled under a course
 interface CourseClass {
-  type: string;
-  day_of_week: string;
-  start_time: string;
-  end_time: string;
-  student_ids: string[];
+  type: string; // Type of lecture (class, tutorial, lab)
+  day_of_week: string; // Day of the week when the class occurs
+  start_time: string; // Start time for the class
+  end_time: string; // End time for the class
+  student_ids: string[]; // List of enrolled student IDs
 }
 
+// Represents a course containing multiple classes
 interface Course {
-  courseId: string;
-  courseName: string;
-  classes: CourseClass[];
+  courseId: string; // Unique course code
+  courseName: string; // Display name of the course
+  classes: CourseClass[]; // Array of class objects related to the course
 }
 
 export default function CoursesPage() {
@@ -24,6 +26,7 @@ export default function CoursesPage() {
   const userId = session?.user?.id;
   const userRole = session?.user?.role;
 
+  // Fetch courses data for the lecturer on component mount
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -38,13 +41,16 @@ export default function CoursesPage() {
       }
     };
 
+    // Only attempt to fetch courses if there's a user ID
     fetchCourses();
   }, [userId]);
 
+  // Handler for navigating to class records page when a class is clicked
   const handleClassClick = (courseId: string, type: string) => {
     router.push(`/lecturer/courses/${courseId}/records?type=${type}`);
   };
 
+  // Utility function to format and display class schedule
   const getTimeString = (day: string, start: string, end: string) => {
     return `${day}: ${start} - ${end}`;
   };

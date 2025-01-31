@@ -1,3 +1,5 @@
+// This component provides an overview of the Student Dashboard,
+// detailing the various tabs (Courses, Appeals, Profile) and giving users quick tips.
 const StudentPage = () => {
   return (
     <div className="min-w-[250px] p-4 h-full overflow-hidden">
